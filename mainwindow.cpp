@@ -2,6 +2,7 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QFileDialog>
+#include <QDateTime>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -20,6 +21,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(daq_thread,SIGNAL(sendMeasurementResults(QJsonObject)), this, SLOT(ReceiveMeasurements(QJsonObject)));
 
     daq_thread->start();
+
+    timer = new QTimer();
+    timer->setSingleShot(false);
+    timer->setInterval(1000);
+    connect(timer,SIGNAL(timeout()),this,SLOT(updateRecordingDuration()));
 }
 
 MainWindow::~MainWindow()
@@ -31,8 +37,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::SetDeviceConnected(bool status)
 {
-    qDebug() << "PORT STATUS " << status;
-
     if (status == true)
     {
         ui->label_CONNECTION_STATUS->setText("CONNECTED");
@@ -83,6 +87,8 @@ void MainWindow::on_pushButton_START_MEASUREMENT_clicked()
         ui->label_RECORDING_STATUS->setStyleSheet("QLabel { background-color : green; color : yellow; }");
         daq_thread->startRecording();
         recording = true;
+        recording_duration = 0;
+        timer->start();
     }
     else
     {
@@ -90,6 +96,7 @@ void MainWindow::on_pushButton_START_MEASUREMENT_clicked()
         ui->label_RECORDING_STATUS->setText("---");
         daq_thread->stopRecording();
         recording = false;
+        timer->stop();
     }
 }
 
@@ -99,4 +106,11 @@ void MainWindow::displayFileDialog()
     fileDialog.setAcceptMode(QFileDialog::AcceptSave);
     QString filename = fileDialog.getSaveFileName();
     daq_thread->storeCSVFile(filename);
+}
+
+void MainWindow::updateRecordingDuration()
+{
+    recording_duration++;
+    ui->label_RECORDING_DURATION->setStyleSheet("QLabel { background-color : green; color : yellow; }");
+    ui->label_RECORDING_DURATION->setText(QDateTime::fromTime_t(recording_duration).toUTC().toString("hh:mm:ss"));
 }

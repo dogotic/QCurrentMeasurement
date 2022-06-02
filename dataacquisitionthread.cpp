@@ -1,5 +1,4 @@
 #include <QThread>
-#include <QDebug>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QFile>
@@ -18,6 +17,7 @@ DataAcquisitionThread::DataAcquisitionThread()
 
 DataAcquisitionThread::~DataAcquisitionThread()
 {
+    m_recording = false;
     m_running = false;
 }
 
@@ -59,8 +59,6 @@ void DataAcquisitionThread::run()
         if  (sample_counter > 0)
         {
             busVoltage_avg += busVoltage;
-            qDebug() << "SAMPLE COUNTER : " << sample_counter << "," << "CURRENT BUS VOLTAGE : " << busVoltage << "," << "BUS VOLTAGE SUM : " <<  busVoltage_avg;
-
             busVoltage_avg /= (double)sample_counter;
 
             shuntVoltage_avg += shuntVoltage;
@@ -103,7 +101,6 @@ void DataAcquisitionThread::run()
 
 void DataAcquisitionThread::storeCSVFile(QString filePathAndFileName)
 {
-    qDebug() << "STORING CSV FILE";
     QFile csvFile(filePathAndFileName);
     csvFile.open(QIODevice::ReadWrite | QIODevice::Text);
     csvFile.resize(0);
