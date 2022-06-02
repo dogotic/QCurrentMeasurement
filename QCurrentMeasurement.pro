@@ -17,11 +17,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     dataacquisitionthread.cpp \
+    logger.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     dataacquisitionthread.h \
+    logger.h \
     mainwindow.h
 
 FORMS += \

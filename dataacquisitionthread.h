@@ -6,6 +6,8 @@
 #include <QJsonObject>
 #include <QtSerialPort/QSerialPort>
 
+#include "logger.h"
+
 class DataAcquisitionThread : public QThread
 {
     Q_OBJECT
@@ -28,6 +30,7 @@ private:
     double current_mA_avg = 0.0;
     double power_mW_avg = 0.0;
     QString csv_buffer;
+    Logger *logger;
 
 signals:
     void notifyDAQConnected(bool status);
