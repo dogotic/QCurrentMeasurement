@@ -17,3 +17,5 @@ TO DO
 ------
 - dodati connect gumb i listWidget za biranje porta (baud rate je hardkodirani na 115200)
 - dodati automatsko prepoznavanje uređaja
+- dodati provjeru veze u radu aplikacije
+- u slucaju da veza pukne, prekinuti recording (ako je u toku )i zasiviti gumb START RECORDING
