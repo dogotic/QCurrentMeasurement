@@ -22,6 +22,7 @@ private:
     Ui::MainWindow *ui;
     DataAcquisitionThread *daq_thread;
     bool recording = false;
+    bool connected = false;
     QTimer *timer;
     int recording_duration = 0;
 
@@ -33,5 +34,10 @@ private slots:
     void on_pushButton_START_MEASUREMENT_clicked();
     void displayFileDialog();
     void updateRecordingDuration();
+    void on_pushButton_CONNECT_clicked();
+
+signals:
+    void startCommunication(QString port_name);
+    void stopCommunication();
 };
 #endif // MAINWINDOW_H

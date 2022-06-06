@@ -15,9 +15,9 @@ public:
     DataAcquisitionThread();
     ~DataAcquisitionThread();
     void run();
-    void stop() { m_running = false; }
     void startRecording();
     void stopRecording();
+    void stop();
 
 private:
     bool m_recording = false;
@@ -38,6 +38,8 @@ signals:
 
 public slots:
     void storeCSVFile(QString filePathAndFileName);
+    void startCommunicationOnPort(QString port_name);
+    void stopCommunicationOnPort();
 };
 
 #endif // DATAACQUISITIONTHREAD_H

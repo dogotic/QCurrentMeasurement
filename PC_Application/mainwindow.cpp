@@ -3,6 +3,7 @@
 #include <QJsonDocument>
 #include <QFileDialog>
 #include <QDateTime>
+#include <QSerialPortInfo>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -13,13 +14,20 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    // list serialPorts
+    const auto infos = QSerialPortInfo::availablePorts();
+    for (const QSerialPortInfo &info : infos) {
+        QString s = QObject::tr("Port: ") + info.portName() + "\n";
+        ui->comboBox_SERIAL_PORTS->addItem(info.portName());
+    }
+
     connect(ui->actionSave_As,SIGNAL(triggered(bool)),this,SLOT(displayFileDialog()));
 
     daq_thread = new DataAcquisitionThread();
-
     connect(daq_thread,SIGNAL(notifyDAQConnected(bool)),this, SLOT(SetDeviceConnected(bool)));
     connect(daq_thread,SIGNAL(sendMeasurementResults(QJsonObject)), this, SLOT(ReceiveMeasurements(QJsonObject)));
-
+    connect(this,SIGNAL(startCommunication(QString)),daq_thread,SLOT(startCommunicationOnPort(QString)));
+    connect(this,SIGNAL(stopCommunication()),daq_thread,SLOT(stopCommunicationOnPort()));
     daq_thread->start();
 
     timer = new QTimer();
@@ -113,4 +121,20 @@ void MainWindow::updateRecordingDuration()
     recording_duration++;
     ui->label_RECORDING_DURATION->setStyleSheet("QLabel { background-color : green; color : yellow; }");
     ui->label_RECORDING_DURATION->setText(QDateTime::fromTime_t(recording_duration).toUTC().toString("hh:mm:ss"));
+}
+
+void MainWindow::on_pushButton_CONNECT_clicked()
+{
+    if (!connected)
+    {
+        connected = true;
+        ui->pushButton_CONNECT->setText("DISCONNECT");
+        emit startCommunication(ui->comboBox_SERIAL_PORTS->currentText());
+    }
+    else
+    {
+        connected = false;
+        ui->pushButton_CONNECT->setText("CONNECT");
+        emit stopCommunication();
+    }
 }
