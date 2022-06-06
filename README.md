@@ -9,8 +9,9 @@ The PC should connect via the serial port or the usb to serial port to some boar
 
 Hardware
 --------
-In my case its an ESP32 Huzzah Feather32. Can be any board with an I2C controller.
-The firmware is the modifie currentMeasurement from Adafruit's INA219 library.
+In my case its an ESP32 Huzzah Feather32. 
+It can be any board with an I2C controller.
+The firmware is the modified currentMeasurement from Adafruit's INA219 library.
 It returns a json formatted string via the serial port. 
 
 TO DO
