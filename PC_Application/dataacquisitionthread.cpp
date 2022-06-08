@@ -9,6 +9,7 @@ DataAcquisitionThread::DataAcquisitionThread()
 {
     logger = new Logger("log.txt");
     port = new QSerialPort();
+    connect(port,SIGNAL(errorOccurred(QSerialPort::SerialPortError)),this,SLOT(handleError(QSerialPort::SerialPortError)));
 }
 
 DataAcquisitionThread::~DataAcquisitionThread()
@@ -31,6 +32,8 @@ void DataAcquisitionThread::run()
             {
                 QJsonDocument doc = QJsonDocument::fromJson(data_in);
                 QJsonObject obj = doc.object();
+
+                // check if we are connected to the correct device
 
                 double busVoltage = obj["busvoltage"].toDouble();
                 double loadVoltage = obj["loadvoltage"].toDouble();
@@ -122,8 +125,6 @@ void DataAcquisitionThread::stopRecording()
 
 void DataAcquisitionThread::startCommunicationOnPort(QString port_name)
 {
-    qDebug() << __FUNCTION__;
-
     port->setPortName("/dev/" + port_name);
     port->setBaudRate(QSerialPort::Baud115200);
     port->setDataBits(QSerialPort::Data8);
@@ -131,21 +132,50 @@ void DataAcquisitionThread::startCommunicationOnPort(QString port_name)
     port->setParity(QSerialPort::NoParity);
     port->open(QIODevice::ReadWrite);
 
-    if (port->isOpen() && !m_running)
+    // try read one message to determine if the correct device is connected
+    if (port->isOpen())
     {
-        emit notifyDAQConnected(true);
-        m_running = true;
+        bool ok = port->waitForReadyRead(10000);
+        if (!ok)
+        {
+            m_running = false;
+            port->close();
+            emit notifyDAQConnected(false);
+        }
+        else
+        {
+            QByteArray data_in = port->readAll();
+
+            if (data_in.length() > 0)
+            {
+                QJsonDocument doc = QJsonDocument::fromJson(data_in);
+                QJsonObject obj = doc.object();
+                if (obj["device_name"] == "QCurrentMeasurement")
+                {
+                    m_running = true;
+                    emit notifyDAQConnected(true);
+                }
+                else
+                {
+                    m_running = false;
+                    port->close();
+                    emit notifyDAQConnected(false);
+                }
+            }
+        }
     }
-    else if (!port->isOpen() && m_running)
+    else if (!port->isOpen())
     {
-        emit notifyDAQConnected(false);
         m_running = false;
+        port->close();
+        emit notifyDAQConnected(false);
     }
 }
 
 void DataAcquisitionThread::stopCommunicationOnPort()
 {
     m_running = false;
+    port->close();
     emit notifyDAQConnected(false);
 }
 
@@ -155,5 +185,23 @@ void DataAcquisitionThread::stop()
     if (port->isOpen())
     {
         port->close();
+        emit notifyDAQConnected(false);
+    }
+}
+
+void DataAcquisitionThread::handleError(QSerialPort::SerialPortError error)
+{
+    qDebug() << error;
+    if (error != QSerialPort::SerialPortError::NoError)
+    {
+        if (m_running == true)
+        {
+            if (port->isOpen())
+            {
+                m_running  = false;
+                port->close();
+                emit notifyDAQConnected(false);
+            }
+        }
     }
 }

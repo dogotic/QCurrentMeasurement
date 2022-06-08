@@ -16,7 +16,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     // list serialPorts
     const auto infos = QSerialPortInfo::availablePorts();
-    for (const QSerialPortInfo &info : infos) {
+    for (const QSerialPortInfo &info : infos)
+    {
         QString s = QObject::tr("Port: ") + info.portName() + "\n";
         ui->comboBox_SERIAL_PORTS->addItem(info.portName());
     }
@@ -45,17 +46,24 @@ MainWindow::~MainWindow()
 
 void MainWindow::SetDeviceConnected(bool status)
 {
+    ui->pushButton_CONNECT->setEnabled(true);
+
     if (status == true)
     {
+        connected = true;
+        ui->pushButton_CONNECT->setText("DISCONNECT");
         ui->label_CONNECTION_STATUS->setText("CONNECTED");
         ui->label_CONNECTION_STATUS->setStyleSheet("QLabel { background-color : green; color : yellow; }");
         ui->pushButton_START_MEASUREMENT->setEnabled(true);
     }
     else
     {
+        connected = false;
+        ui->pushButton_CONNECT->setText("CONNECT");
         ui->pushButton_START_MEASUREMENT->setEnabled(false);
         ui->label_CONNECTION_STATUS->setText("DISCONNECTED");
         ui->label_CONNECTION_STATUS->setStyleSheet("QLabel { background-color : red; color : white; }");
+        ui->comboBox_SERIAL_PORTS->setEnabled(true);
     }
 }
 
@@ -125,16 +133,19 @@ void MainWindow::updateRecordingDuration()
 
 void MainWindow::on_pushButton_CONNECT_clicked()
 {
+    ui->label_CONNECTION_STATUS->setText("IN PROGRESS...");
+    ui->label_CONNECTION_STATUS->setStyleSheet("QLabel { background-color : grey; color : yellow; }");
+
+    ui->pushButton_CONNECT->setEnabled(false);
+    ui->comboBox_SERIAL_PORTS->setEnabled(false);
+    // ovo sranje mi treba da bi se label update-ao i gumb i comboBox....
+    qApp->processEvents();
     if (!connected)
     {
-        connected = true;
-        ui->pushButton_CONNECT->setText("DISCONNECT");
-        emit startCommunication(ui->comboBox_SERIAL_PORTS->currentText());
+        daq_thread->startCommunicationOnPort(ui->comboBox_SERIAL_PORTS->currentText());
     }
     else
     {
-        connected = false;
-        ui->pushButton_CONNECT->setText("CONNECT");
-        emit stopCommunication();
+        daq_thread->stopCommunicationOnPort();
     }
 }

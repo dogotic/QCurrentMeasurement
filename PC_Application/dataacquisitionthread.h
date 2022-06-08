@@ -40,6 +40,7 @@ public slots:
     void storeCSVFile(QString filePathAndFileName);
     void startCommunicationOnPort(QString port_name);
     void stopCommunicationOnPort();
+    void handleError(QSerialPort::SerialPortError error);
 };
 
 #endif // DATAACQUISITIONTHREAD_H
