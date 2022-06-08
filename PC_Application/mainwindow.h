@@ -5,6 +5,7 @@
 #include <QJsonDocument>
 #include <QTimer>
 #include <QList>
+
 #include "dataacquisitionthread.h"
 #include "serialportlistpopulator.h"
 
@@ -39,6 +40,7 @@ private slots:
     void updateRecordingDuration();
     void on_pushButton_CONNECT_clicked();
     void populateSerialPorts(QList<QSerialPortInfo> list);
+    void exitProgram();
 
 signals:
     void startCommunication(QString port_name);

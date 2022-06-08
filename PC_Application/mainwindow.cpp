@@ -24,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
     // populatorThread->run();
 
     connect(ui->actionSave_As,SIGNAL(triggered(bool)),this,SLOT(displayFileDialog()));
+    connect(ui->actionExit,SIGNAL(triggered(bool)),this,SLOT(exitProgram()));
 
     daq_thread = new DataAcquisitionThread();
     connect(daq_thread,SIGNAL(notifyDAQConnected(bool)),this, SLOT(SetDeviceConnected(bool)));
@@ -153,9 +154,13 @@ void MainWindow::on_pushButton_CONNECT_clicked()
 
 void MainWindow::populateSerialPorts(QList<QSerialPortInfo> list)
 {
-    const auto infos = QSerialPortInfo::availablePorts();
-    for (const QSerialPortInfo &info : infos)
+    for (const QSerialPortInfo &info : list)
     {
         ui->comboBox_SERIAL_PORTS->addItem(info.portName());
     }
+}
+
+void MainWindow::exitProgram()
+{
+    QApplication::exit();
 }
