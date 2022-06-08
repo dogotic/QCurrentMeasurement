@@ -25,32 +25,7 @@ void setup(void)
   //ina219.setCalibration_32V_1A();
   // Or to use a lower 16V, 400mA range (higher precision on volts and amps):
   //ina219.setCalibration_16V_400mA();
-
-#if 0
-  char buffer[32] = {0};
-  int cntr = 0;
-
-  // broadcast device name so the port can be auto queried from the PC side 
-  while(1)
-  {
-    Serial.println("QCurrentMeasurementDevice_V100");    
-    // send data only when you receive data:
-    if (Serial.available() > 0) 
-    {
-      // read the incoming byte:
-      buffer[cntr] = Serial.read();    
-      if (buffer[cntr] == '\n')
-      {
-        if (strcmp(buffer,"OK\n") == 0)
-        {
-          break;
-        }
-      }
-      cntr++;
-    }
-    delay(100);
-  }
-#endif   
+ 
 }
 
 void loop(void) 
@@ -67,6 +42,8 @@ void loop(void)
   power_mW = ina219.getPower_mW();
   loadvoltage = busvoltage + (shuntvoltage / 1000);
 
+  doc["device_name"] = "QCurrentMeasurement";
+  doc["device_version"] = "1.0.0";
   doc["shuntvoltage"] = shuntvoltage;
   doc["busvoltage"] = busvoltage;
   doc["current_mA"] =  current_mA;
