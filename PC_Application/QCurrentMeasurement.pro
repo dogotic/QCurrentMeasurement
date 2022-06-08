@@ -19,12 +19,14 @@ SOURCES += \
     dataacquisitionthread.cpp \
     logger.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    serialportlistpopulator.cpp
 
 HEADERS += \
     dataacquisitionthread.h \
     logger.h \
-    mainwindow.h
+    mainwindow.h \
+    serialportlistpopulator.h
 
 FORMS += \
     mainwindow.ui

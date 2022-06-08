@@ -14,13 +14,14 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    // list serialPorts
     const auto infos = QSerialPortInfo::availablePorts();
     for (const QSerialPortInfo &info : infos)
     {
-        QString s = QObject::tr("Port: ") + info.portName() + "\n";
         ui->comboBox_SERIAL_PORTS->addItem(info.portName());
     }
+
+    // populatorThread = new serialPortListPopulator();
+    // populatorThread->run();
 
     connect(ui->actionSave_As,SIGNAL(triggered(bool)),this,SLOT(displayFileDialog()));
 
@@ -147,5 +148,14 @@ void MainWindow::on_pushButton_CONNECT_clicked()
     else
     {
         daq_thread->stopCommunicationOnPort();
+    }
+}
+
+void MainWindow::populateSerialPorts(QList<QSerialPortInfo> list)
+{
+    const auto infos = QSerialPortInfo::availablePorts();
+    for (const QSerialPortInfo &info : infos)
+    {
+        ui->comboBox_SERIAL_PORTS->addItem(info.portName());
     }
 }

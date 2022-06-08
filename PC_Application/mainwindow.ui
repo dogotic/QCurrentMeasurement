@@ -19,7 +19,7 @@
      <widget class="QComboBox" name="comboBox_SERIAL_PORTS">
       <property name="font">
        <font>
-        <pointsize>16</pointsize>
+        <pointsize>12</pointsize>
        </font>
       </property>
      </widget>
@@ -28,7 +28,7 @@
      <widget class="QPushButton" name="pushButton_CONNECT">
       <property name="font">
        <font>
-        <pointsize>16</pointsize>
+        <pointsize>12</pointsize>
        </font>
       </property>
       <property name="text">
@@ -48,7 +48,7 @@
         </property>
         <property name="font">
          <font>
-          <pointsize>16</pointsize>
+          <pointsize>12</pointsize>
           <italic>false</italic>
          </font>
         </property>
@@ -67,7 +67,7 @@
         </property>
         <property name="font">
          <font>
-          <pointsize>16</pointsize>
+          <pointsize>12</pointsize>
          </font>
         </property>
         <property name="text">
@@ -92,7 +92,7 @@
         </property>
         <property name="font">
          <font>
-          <pointsize>16</pointsize>
+          <pointsize>12</pointsize>
           <italic>false</italic>
          </font>
         </property>
@@ -111,7 +111,7 @@
         </property>
         <property name="font">
          <font>
-          <pointsize>16</pointsize>
+          <pointsize>12</pointsize>
          </font>
         </property>
         <property name="text">
@@ -136,7 +136,7 @@
         </property>
         <property name="font">
          <font>
-          <pointsize>16</pointsize>
+          <pointsize>12</pointsize>
          </font>
         </property>
         <property name="text">
@@ -154,7 +154,7 @@
         </property>
         <property name="font">
          <font>
-          <pointsize>16</pointsize>
+          <pointsize>12</pointsize>
          </font>
         </property>
         <property name="text">
@@ -171,12 +171,12 @@
      <widget class="QGroupBox" name="groupBox">
       <property name="font">
        <font>
-        <pointsize>16</pointsize>
+        <pointsize>12</pointsize>
        </font>
       </property>
       <property name="styleSheet">
-       <string notr="true">     border: 2px solid gray; 
-     border-radius: 3px; </string>
+       <string notr="true">     border: 0px solid gray; 
+     border-radius: 0px; </string>
       </property>
       <property name="title">
        <string>TRENUTNA VRIJEDNOST</string>
@@ -186,7 +186,7 @@
         <widget class="QLabel" name="label_CURRENT_NOW">
          <property name="font">
           <font>
-           <pointsize>16</pointsize>
+           <pointsize>12</pointsize>
           </font>
          </property>
          <property name="text">
@@ -201,7 +201,7 @@
         <widget class="QLabel" name="label_5">
          <property name="font">
           <font>
-           <pointsize>16</pointsize>
+           <pointsize>12</pointsize>
           </font>
          </property>
          <property name="text">
@@ -213,7 +213,7 @@
         <widget class="QLabel" name="label_2">
          <property name="font">
           <font>
-           <pointsize>16</pointsize>
+           <pointsize>12</pointsize>
           </font>
          </property>
          <property name="text">
@@ -225,7 +225,7 @@
         <widget class="QLabel" name="label_LOAD_VOLTAGE_NOW">
          <property name="font">
           <font>
-           <pointsize>16</pointsize>
+           <pointsize>12</pointsize>
           </font>
          </property>
          <property name="text">
@@ -240,7 +240,7 @@
         <widget class="QLabel" name="label_BUS_VOLTAGE_NOW">
          <property name="font">
           <font>
-           <pointsize>16</pointsize>
+           <pointsize>12</pointsize>
           </font>
          </property>
          <property name="text">
@@ -255,7 +255,7 @@
         <widget class="QLabel" name="label_POWER_NOW">
          <property name="font">
           <font>
-           <pointsize>16</pointsize>
+           <pointsize>12</pointsize>
           </font>
          </property>
          <property name="text">
@@ -270,7 +270,7 @@
         <widget class="QLabel" name="label_SHUNT_VOLTAGE_NOW">
          <property name="font">
           <font>
-           <pointsize>16</pointsize>
+           <pointsize>12</pointsize>
           </font>
          </property>
          <property name="text">
@@ -285,7 +285,7 @@
         <widget class="QLabel" name="label_4">
          <property name="font">
           <font>
-           <pointsize>16</pointsize>
+           <pointsize>12</pointsize>
           </font>
          </property>
          <property name="text">
@@ -297,7 +297,7 @@
         <widget class="QLabel" name="label">
          <property name="font">
           <font>
-           <pointsize>16</pointsize>
+           <pointsize>12</pointsize>
           </font>
          </property>
          <property name="text">
@@ -309,7 +309,7 @@
         <widget class="QLabel" name="label_3">
          <property name="font">
           <font>
-           <pointsize>16</pointsize>
+           <pointsize>12</pointsize>
           </font>
          </property>
          <property name="text">
@@ -324,12 +324,12 @@
      <widget class="QGroupBox" name="groupBox_2">
       <property name="font">
        <font>
-        <pointsize>16</pointsize>
+        <pointsize>12</pointsize>
        </font>
       </property>
       <property name="styleSheet">
-       <string notr="true">     border: 2px solid gray; 
-     border-radius: 3px; </string>
+       <string notr="true">     border: 0px solid gray; 
+     border-radius: 0px; </string>
       </property>
       <property name="title">
        <string>AKUMULIRANA VRIJEDNOST</string>
@@ -439,7 +439,7 @@
       </property>
       <property name="font">
        <font>
-        <pointsize>16</pointsize>
+        <pointsize>12</pointsize>
        </font>
       </property>
       <property name="text">
