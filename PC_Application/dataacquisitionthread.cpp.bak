@@ -125,11 +125,7 @@ void DataAcquisitionThread::stopRecording()
 
 void DataAcquisitionThread::startCommunicationOnPort(QString port_name)
 {
-#ifdef __linux__
     port->setPortName("/dev/" + port_name);
-#elif _WIN32
-    port->setPortName(port_name);
-#endif
     port->setBaudRate(QSerialPort::Baud115200);
     port->setDataBits(QSerialPort::Data8);
     port->setStopBits(QSerialPort::OneStop);

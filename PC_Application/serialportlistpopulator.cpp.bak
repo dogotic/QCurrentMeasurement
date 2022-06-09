@@ -17,6 +17,10 @@ void serialPortListPopulator::run()
     {
         // list serialPorts
         const auto infos = QSerialPortInfo::availablePorts();
+        for (const QSerialPortInfo &info : infos)
+        {
+            qDebug() << __FUNCTION__ << ", " << info.portName();
+        }
         emit sendPortList(infos);
         QThread::sleep(1);
     }
