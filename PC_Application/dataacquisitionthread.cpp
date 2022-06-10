@@ -117,7 +117,6 @@ void DataAcquisitionThread::startRecording()
 {
     m_recording = true;
     m_csvBuffer.clear();
-    m_dataSamples->clear();
 }
 
 void DataAcquisitionThread::stopRecording()
@@ -182,6 +181,7 @@ void DataAcquisitionThread::startCommunicationOnPort(QString port_name)
 
 void DataAcquisitionThread::stopCommunicationOnPort()
 {
+    m_dataSamples->clear();
     m_running = false;
     port->close();
     emit notifyDAQConnected(false);
@@ -190,11 +190,12 @@ void DataAcquisitionThread::stopCommunicationOnPort()
 void DataAcquisitionThread::stop()
 {
     m_running = false;
+    m_dataSamples->clear();
     if (port->isOpen())
     {
         port->close();
-        emit notifyDAQConnected(false);
     }
+    emit notifyDAQConnected(false);
 }
 
 void DataAcquisitionThread::handleError(QSerialPort::SerialPortError error)

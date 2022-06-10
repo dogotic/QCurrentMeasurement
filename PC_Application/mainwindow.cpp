@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     timer = new QTimer();
     timer->setSingleShot(false);
-    timer->setInterval(1000);
+    timer->setInterval(100);
     connect(timer,SIGNAL(timeout()),this,SLOT(updateRecordingDuration()));
 }
 
@@ -136,7 +136,7 @@ void MainWindow::updateRecordingDuration()
 {
     recording_duration++;
     ui->label_RECORDING_DURATION->setStyleSheet("QLabel { background-color : green; color : yellow; }");
-    ui->label_RECORDING_DURATION->setText(QDateTime::fromSecsSinceEpoch(recording_duration).toUTC().toString("hh:mm:ss"));
+    ui->label_RECORDING_DURATION->setText(QDateTime::fromMSecsSinceEpoch(recording_duration).toUTC().toString("hh:mm:ss.zzz"));
 
     QList<QJsonObject> samples = daq_thread->getDataSamples();
     ui->plotter->setDataSamples(samples);

@@ -51,14 +51,6 @@ void loop(void)
   doc["loadvoltage"] = loadvoltage;
 
   serializeJson(doc, Serial);
-  /*
-  Serial.println("");
-  Serial.print("Bus Voltage:   "); Serial.print(busvoltage); Serial.println(" V");
-  Serial.print("Shunt Voltage: "); Serial.print(shuntvoltage); Serial.println(" mV");
-  Serial.print("Load Voltage:  "); Serial.print(loadvoltage); Serial.println(" V");
-  Serial.print("Current:       "); Serial.print(current_mA); Serial.println(" mA");
-  Serial.print("Power:         "); Serial.print(power_mW); Serial.println(" mW");
-  Serial.println("");
-  */
-  delay(1000);
+
+  delay(100);
 }
