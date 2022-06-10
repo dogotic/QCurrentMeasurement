@@ -18,19 +18,21 @@ public:
     void startRecording();
     void stopRecording();
     void stop();
+    QList<QJsonObject> getDataSamples();
 
 private:
     bool m_recording = false;
     bool m_running  = false;
     QSerialPort *port;
-    int sample_counter = 0;
+    int m_sampleCounter = 0;
     double busVoltage_avg = 0.0;
     double shuntVoltage_avg = 0.0;
     double loadVoltage_avg = 0.0;
     double current_mA_avg = 0.0;
     double power_mW_avg = 0.0;
-    QString csv_buffer;
-    Logger *logger;
+    QString m_csvBuffer;
+    Logger *m_logger;
+    QList<QJsonObject> *m_dataSamples;
 
 signals:
     void notifyDAQConnected(bool status);

@@ -17,6 +17,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     dataacquisitionthread.cpp \
+    graphplotter.cpp \
     logger.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -24,6 +25,7 @@ SOURCES += \
 
 HEADERS += \
     dataacquisitionthread.h \
+    graphplotter.h \
     logger.h \
     mainwindow.h \
     serialportlistpopulator.h

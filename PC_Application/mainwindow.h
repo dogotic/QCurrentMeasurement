@@ -8,6 +8,7 @@
 
 #include "dataacquisitionthread.h"
 #include "serialportlistpopulator.h"
+#include "graphplotter.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -29,6 +30,7 @@ private:
     bool connected = false;
     QTimer *timer;
     int recording_duration = 0;
+    GraphPlotter *plotter;
 
 public slots:
     void SetDeviceConnected(bool status);

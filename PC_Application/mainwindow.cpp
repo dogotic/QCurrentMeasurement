@@ -4,6 +4,8 @@
 #include <QFileDialog>
 #include <QDateTime>
 #include <QSerialPortInfo>
+#include <qwt.h>
+#include <qwt_plot.h>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -37,6 +39,8 @@ MainWindow::MainWindow(QWidget *parent)
     timer->setSingleShot(false);
     timer->setInterval(1000);
     connect(timer,SIGNAL(timeout()),this,SLOT(updateRecordingDuration()));
+
+    plotter = new GraphPlotter("MEASUREMENT RESULT");
 }
 
 MainWindow::~MainWindow()
@@ -75,8 +79,6 @@ void MainWindow::SetDeviceConnected(bool status)
 
 void MainWindow::ReceiveMeasurements(QJsonObject data)
 {
-    qDebug() << data;
-
     float busVoltage_now = data["busvoltage_now"].toDouble();
     float loadVoltage_now = data["loadvoltage_now"].toDouble();
     float shuntVoltage_now = data["shuntvoltage_now"].toDouble();
@@ -137,6 +139,11 @@ void MainWindow::updateRecordingDuration()
     recording_duration++;
     ui->label_RECORDING_DURATION->setStyleSheet("QLabel { background-color : green; color : yellow; }");
     ui->label_RECORDING_DURATION->setText(QDateTime::fromSecsSinceEpoch(recording_duration).toUTC().toString("hh:mm:ss"));
+    if (ui->checkBox->isChecked())
+    {
+        plotter->setDataSamples(daq_thread->getDataSamples());
+        plotter->show();
+    }
 }
 
 void MainWindow::on_pushButton_CONNECT_clicked()

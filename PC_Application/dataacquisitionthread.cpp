@@ -7,14 +7,15 @@
 
 DataAcquisitionThread::DataAcquisitionThread()
 {
-    logger = new Logger("log.txt");
+    m_logger = new Logger("log.txt");
     port = new QSerialPort();
     connect(port,SIGNAL(errorOccurred(QSerialPort::SerialPortError)),this,SLOT(handleError(QSerialPort::SerialPortError)));
+    m_dataSamples = new QList<QJsonObject>;
 }
 
 DataAcquisitionThread::~DataAcquisitionThread()
 {
-    delete logger;
+    delete m_logger;
     m_recording = false;
     m_running = false;
 }
@@ -44,30 +45,31 @@ void DataAcquisitionThread::run()
                 if (m_recording)
                 {
                     /* store to csv buffer */
-                    csv_buffer.append(QString::number(busVoltage) + ",");
-                    csv_buffer.append(QString::number(loadVoltage) + ",");
-                    csv_buffer.append(QString::number(shuntVoltage) + ",");
-                    csv_buffer.append(QString::number(current_mA) + ",");
-                    csv_buffer.append(QString::number(power_mW) + "\n");
+                    m_csvBuffer.append(QString::number(busVoltage) + ",");
+                    m_csvBuffer.append(QString::number(loadVoltage) + ",");
+                    m_csvBuffer.append(QString::number(shuntVoltage) + ",");
+                    m_csvBuffer.append(QString::number(current_mA) + ",");
+                    m_csvBuffer.append(QString::number(power_mW) + "\n");
+                    m_dataSamples->append(obj);
                 }
 
                 /* prevent divison by zero */
-                if  (sample_counter > 0)
+                if  (m_sampleCounter > 0)
                 {
                     busVoltage_avg += busVoltage;
-                    busVoltage_avg /= (double)sample_counter;
+                    busVoltage_avg /= m_sampleCounter;
 
                     shuntVoltage_avg += shuntVoltage;
-                    shuntVoltage_avg /= sample_counter;
+                    shuntVoltage_avg /= m_sampleCounter;
 
                     loadVoltage_avg += loadVoltage;
-                    loadVoltage_avg /= sample_counter;
+                    loadVoltage_avg /= m_sampleCounter;
 
                     current_mA_avg += current_mA;
-                    current_mA_avg /= sample_counter;
+                    current_mA_avg /= m_sampleCounter;
 
                     power_mW_avg += power_mW;
-                    power_mW_avg /= sample_counter;
+                    power_mW_avg /= m_sampleCounter;
                 }
 
                 QJsonObject data_out;
@@ -84,16 +86,15 @@ void DataAcquisitionThread::run()
                 data_out.insert("current_mA_avg",current_mA_avg);
 
                 /* ignore first result as it returns 0 for all measurements */
-                if (sample_counter > 0)
+                if (m_sampleCounter > 0)
                 {
                     emit sendMeasurementResults(data_out);
                 }
-
-                sample_counter++;
+                m_sampleCounter++;
             }
             else
             {
-                logger->write(WARNING,"ZERO LENGTH DATA RECEIVED");
+                m_logger->write(WARNING,"ZERO LENGTH DATA RECEIVED");
             }
         }
         QThread::sleep(1);
@@ -106,7 +107,7 @@ void DataAcquisitionThread::storeCSVFile(QString filePathAndFileName)
     csvFile.open(QIODevice::ReadWrite | QIODevice::Text);
     csvFile.resize(0);
     csvFile.write("BUS VOLTAGE,SHUNT VOLTAGE,LOAD VOLTAGE, CURRENT, POWER\n");
-    csvFile.write(csv_buffer.toUtf8());
+    csvFile.write(m_csvBuffer.toUtf8());
     csvFile.flush();
     csvFile.close();
 }
@@ -115,7 +116,8 @@ void DataAcquisitionThread::storeCSVFile(QString filePathAndFileName)
 void DataAcquisitionThread::startRecording()
 {
     m_recording = true;
-    csv_buffer.clear();
+    m_csvBuffer.clear();
+    m_dataSamples->clear();
 }
 
 void DataAcquisitionThread::stopRecording()
@@ -154,8 +156,10 @@ void DataAcquisitionThread::startCommunicationOnPort(QString port_name)
             {
                 QJsonDocument doc = QJsonDocument::fromJson(data_in);
                 QJsonObject obj = doc.object();
+                m_dataSamples->append(obj);
                 if (obj["device_name"] == "QCurrentMeasurement")
                 {
+                    m_sampleCounter = 0;
                     m_running = true;
                     emit notifyDAQConnected(true);
                 }
@@ -208,4 +212,9 @@ void DataAcquisitionThread::handleError(QSerialPort::SerialPortError error)
             }
         }
     }
+}
+
+QList<QJsonObject> DataAcquisitionThread::getDataSamples()
+{
+    return *m_dataSamples;
 }
