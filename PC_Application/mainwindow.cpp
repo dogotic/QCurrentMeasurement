@@ -39,8 +39,6 @@ MainWindow::MainWindow(QWidget *parent)
     timer->setSingleShot(false);
     timer->setInterval(1000);
     connect(timer,SIGNAL(timeout()),this,SLOT(updateRecordingDuration()));
-
-    plotter = new GraphPlotter("MEASUREMENT RESULT");
 }
 
 MainWindow::~MainWindow()
@@ -139,11 +137,10 @@ void MainWindow::updateRecordingDuration()
     recording_duration++;
     ui->label_RECORDING_DURATION->setStyleSheet("QLabel { background-color : green; color : yellow; }");
     ui->label_RECORDING_DURATION->setText(QDateTime::fromSecsSinceEpoch(recording_duration).toUTC().toString("hh:mm:ss"));
-    if (ui->checkBox->isChecked())
-    {
-        plotter->setDataSamples(daq_thread->getDataSamples());
-        plotter->show();
-    }
+
+    QList<QJsonObject> samples = daq_thread->getDataSamples();
+    ui->plotter->setDataSamples(samples);
+    ui->plotter->show();
 }
 
 void MainWindow::on_pushButton_CONNECT_clicked()

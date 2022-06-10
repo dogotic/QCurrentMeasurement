@@ -97,7 +97,7 @@ void DataAcquisitionThread::run()
                 m_logger->write(WARNING,"ZERO LENGTH DATA RECEIVED");
             }
         }
-        QThread::sleep(1);
+        QThread::msleep(100);
     }
 }
 

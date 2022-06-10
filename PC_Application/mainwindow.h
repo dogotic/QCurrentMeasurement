@@ -30,7 +30,6 @@ private:
     bool connected = false;
     QTimer *timer;
     int recording_duration = 0;
-    GraphPlotter *plotter;
 
 public slots:
     void SetDeviceConnected(bool status);

@@ -6,52 +6,64 @@
 #include <qwt_plot_curve.h>
 #include "graphplotter.h"
 
-GraphPlotter::GraphPlotter()
+GraphPlotter::GraphPlotter(QWidget *parent, QString title)
 {
-    setTitle("This is an Example");
-}
+    qDebug() << __FUNCTION__ << "called";
 
-GraphPlotter::GraphPlotter(QString title)
-{
     setTitle(title);
     setCanvasBackground(Qt::white);
 
+    /*
     setAxisScale(0,0.0,14.0,1.0);   // bus voltage
     setAxisScale(1,0.0,14.0,1.0);   // load voltage
     setAxisScale(2,0.0,1.0,0.1);   // shunt voltage
     setAxisScale(3,0.0,2000.0,1.0);   // current_mA
     setAxisScale(4,0.0,10000.0,1.0);   // power_mW
+    */
+    setAxisAutoScale(true);
 
     insertLegend( new QwtLegend() );
     QwtPlotGrid *grid = new QwtPlotGrid();
     grid->attach(this);
 
+    QwtWeedingCurveFitter *fitter = new QwtWeedingCurveFitter();
+    fitter->setTolerance(0.1);
+
     curve_busVoltage = new QwtPlotCurve();
     curve_busVoltage->setTitle( "Bus voltage (V) " );
     curve_busVoltage->setPen( Qt::blue, 4 ),
     curve_busVoltage->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+    curve_busVoltage->setCurveFitter(fitter);
+    curve_busVoltage->setCurveAttribute(QwtPlotCurve::Fitted, true);
 
     curve_loadVoltage = new QwtPlotCurve();
     curve_loadVoltage->setTitle( "Load voltage (V) " );
     curve_loadVoltage->setPen( Qt::red, 4 ),
     curve_loadVoltage->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+    curve_loadVoltage->setCurveFitter(fitter);
+    curve_loadVoltage->setCurveAttribute(QwtPlotCurve::Fitted, true);
 
     curve_shuntVoltage = new QwtPlotCurve();
     curve_shuntVoltage->setTitle( "Shunt voltage (V) " );
     curve_shuntVoltage->setPen( Qt::yellow, 4 ),
     curve_shuntVoltage->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+    curve_shuntVoltage->setCurveFitter(fitter);
+    curve_shuntVoltage->setCurveAttribute(QwtPlotCurve::Fitted, true);
 
     curve_current_mA = new QwtPlotCurve();
     curve_current_mA->setTitle( "Current (mA) " );
     curve_current_mA->setPen( Qt::green, 4 ),
     curve_current_mA->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+    curve_current_mA->setCurveFitter(fitter);
+    curve_current_mA->setCurveAttribute(QwtPlotCurve::Fitted, true);
 
     curve_power_mW = new QwtPlotCurve();
     curve_power_mW->setTitle( "Power (mW) " );
     curve_power_mW->setPen( Qt::black, 4 ),
     curve_power_mW->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+    curve_power_mW->setCurveFitter(fitter);
+    curve_power_mW->setCurveAttribute(QwtPlotCurve::Fitted, true);
 
-    resize(1024,768);
 }
 
 void GraphPlotter::setDataSamples(QList<QJsonObject> samples)
@@ -64,7 +76,6 @@ void GraphPlotter::setDataSamples(QList<QJsonObject> samples)
     QPolygonF points_current;
     QPolygonF points_power;
     int point_counter = 0;
-
 
     foreach (QJsonObject obj, samples)
     {
@@ -89,15 +100,14 @@ void GraphPlotter::setDataSamples(QList<QJsonObject> samples)
     curve_current_mA->setSamples(points_current);
     curve_power_mW->setSamples(points_power);
 
-    curve_busVoltage->attach(this);
-    curve_shuntVoltage->attach(this);
-    curve_loadVoltage->attach(this);
-    curve_current_mA->attach(this);
+    //curve_busVoltage->attach(this);
+    //curve_shuntVoltage->attach(this);
+    //curve_loadVoltage->attach(this);
+    //curve_current_mA->attach(this);
     curve_power_mW->attach(this);
-
-    resize(1024,768);
 
     // Show the plots
     replot();
+    //update();
 }
 

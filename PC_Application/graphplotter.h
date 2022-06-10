@@ -6,13 +6,13 @@
 #include <QWidget>
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
+#include <qwt_curve_fitter.h>
 
 class GraphPlotter : public QwtPlot
 {
     Q_OBJECT
 public:
-    GraphPlotter();
-    GraphPlotter(QString title);
+    GraphPlotter(QWidget *parent, QString title="");
     void setDataSamples(QList<QJsonObject> samples);
 
 private:
@@ -22,6 +22,7 @@ private:
     QwtPlotCurve *curve_shuntVoltage;
     QwtPlotCurve *curve_current_mA;
     QwtPlotCurve *curve_power_mW;
+    QwtWeedingCurveFitter *fitter;
 };
 
 #endif // GRAPHPLOTTER_H
