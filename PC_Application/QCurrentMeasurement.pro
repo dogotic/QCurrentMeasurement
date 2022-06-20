@@ -16,7 +16,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    dataacquisitionthread.cpp \
+    dataacquisition.cpp \
     graphplotter.cpp \
     logger.cpp \
     main.cpp \
@@ -24,7 +24,7 @@ SOURCES += \
     serialportlistpopulator.cpp
 
 HEADERS += \
-    dataacquisitionthread.h \
+    dataacquisition.h \
     graphplotter.h \
     logger.h \
     mainwindow.h \

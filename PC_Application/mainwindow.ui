@@ -18,7 +18,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -324,112 +324,6 @@
              </property>
              <property name="text">
               <string>LOAD VOLTAGE (V)</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item>
-         <widget class="QGroupBox" name="groupBox_2">
-          <property name="font">
-           <font>
-            <pointsize>12</pointsize>
-           </font>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">     border: 0px solid gray; 
-     border-radius: 0px; </string>
-          </property>
-          <property name="title">
-           <string>AKUMULIRANA VRIJEDNOST</string>
-          </property>
-          <property name="flat">
-           <bool>false</bool>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_3">
-           <item row="1" column="0">
-            <widget class="QLabel" name="label_7">
-             <property name="text">
-              <string>SHUNT VOLTAGE (mV)</string>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="0">
-            <widget class="QLabel" name="label_11">
-             <property name="text">
-              <string>POWER (mW)</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="1">
-            <widget class="QLabel" name="label_CURRENT_AVG">
-             <property name="text">
-              <string>---</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QLabel" name="label_16">
-             <property name="text">
-              <string>LOAD VOLTAGE (V)</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="0">
-            <widget class="QLabel" name="label_10">
-             <property name="text">
-              <string>CURRENT (mA)</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1">
-            <widget class="QLabel" name="label_LOAD_VOLTAGE_AVG">
-             <property name="text">
-              <string>---</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLabel" name="label_BUS_VOLTAGE_AVG">
-             <property name="text">
-              <string>---</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="label_9">
-             <property name="text">
-              <string>BUS VOLTAGE (V)</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QLabel" name="label_SHUNT_VOLTAGE_AVG">
-             <property name="text">
-              <string>---</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="1">
-            <widget class="QLabel" name="label_POWER_AVG">
-             <property name="text">
-              <string>---</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
              </property>
             </widget>
            </item>

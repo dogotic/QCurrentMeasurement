@@ -6,7 +6,7 @@
 #include <QTimer>
 #include <QList>
 
-#include "dataacquisitionthread.h"
+#include "dataacquisition.h"
 #include "serialportlistpopulator.h"
 #include "graphplotter.h"
 
@@ -24,7 +24,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    DataAcquisitionThread *daq_thread;
+    DataAcquisition *daq;
     serialPortListPopulator *populatorThread;
     bool recording = false;
     bool connected = false;
@@ -33,14 +33,14 @@ private:
 
 public slots:
     void SetDeviceConnected(bool status);
-    void ReceiveMeasurements(QJsonObject data);
+    void ReceiveMeasurements(QJsonArray samples);
 
 private slots:
     void on_pushButton_START_MEASUREMENT_clicked();
     void displayFileDialog();
     void updateRecordingDuration();
     void on_pushButton_CONNECT_clicked();
-    void populateSerialPorts(QList<QSerialPortInfo> list);
+    void populateSerialPorts(QStringList list);
     void exitProgram();
 
 signals:

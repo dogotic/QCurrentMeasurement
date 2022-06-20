@@ -1,24 +1,23 @@
-#ifndef DATAACQUISITIONTHREAD_H
-#define DATAACQUISITIONTHREAD_H
+#ifndef DATAACQUISITION_H
+#define DATAACQUISITION_H
 
-#include <QThread>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonArray>
 #include <QtSerialPort/QSerialPort>
 
 #include "logger.h"
 
-class DataAcquisitionThread : public QThread
+class DataAcquisition
 {
     Q_OBJECT
 public:
-    DataAcquisitionThread();
-    ~DataAcquisitionThread();
+    DataAcquisition();
+    ~DataAcquisition();
     void run();
     void startRecording();
     void stopRecording();
     void stop();
-    QList<QJsonObject> getDataSamples();
 
 private:
     bool m_recording = false;
@@ -32,17 +31,20 @@ private:
     double power_mW_avg = 0.0;
     QString m_csvBuffer;
     Logger *m_logger;
-    QList<QJsonObject> *m_dataSamples;
+    QJsonArray m_dataSamples;
+    QString m_deviceName;
+    QByteArray data_in;
 
 signals:
     void notifyDAQConnected(bool status);
-    void sendMeasurementResults(QJsonObject data);
+    void sendDataSamples(QJsonArray dataSamples);
 
 public slots:
     void storeCSVFile(QString filePathAndFileName);
     void startCommunicationOnPort(QString port_name);
     void stopCommunicationOnPort();
     void handleError(QSerialPort::SerialPortError error);
+    void readIncommingData();
 };
 
-#endif // DATAACQUISITIONTHREAD_H
+#endif // DATAACQUISITION_H

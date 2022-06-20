@@ -18,7 +18,7 @@ private:
     bool m_running = false;
 
 signals:
-    void sendPortList(QList <QSerialPortInfo> list);
+    void sendPortList(QStringList list);
 };
 
 #endif // SERIALPORTLISTPOPULATOR_H

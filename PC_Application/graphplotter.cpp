@@ -8,18 +8,9 @@
 
 GraphPlotter::GraphPlotter(QWidget *parent, QString title)
 {
-    qDebug() << __FUNCTION__ << "called";
-
     setTitle(title);
     setCanvasBackground(Qt::white);
 
-    /*
-    setAxisScale(0,0.0,14.0,1.0);   // bus voltage
-    setAxisScale(1,0.0,14.0,1.0);   // load voltage
-    setAxisScale(2,0.0,1.0,0.1);   // shunt voltage
-    setAxisScale(3,0.0,2000.0,1.0);   // current_mA
-    setAxisScale(4,0.0,10000.0,1.0);   // power_mW
-    */
     setAxisAutoScale(true);
 
     insertLegend( new QwtLegend() );
@@ -66,48 +57,46 @@ GraphPlotter::GraphPlotter(QWidget *parent, QString title)
 
 }
 
-void GraphPlotter::setDataSamples(QList<QJsonObject> samples)
+void GraphPlotter::setDataSamples(QJsonArray samples)
 {
-    m_dataSamples = samples;
-
     QPolygonF points_shuntVoltage;
     QPolygonF points_busVoltage;
     QPolygonF points_loadVoltage;
     QPolygonF points_current;
     QPolygonF points_power;
-    int point_counter = 0;
 
-    foreach (QJsonObject obj, samples)
+    for (int point_counter=0; point_counter < samples.count(); point_counter++)
     {
-        QPointF point_shuntVoltage(point_counter, obj["shuntvoltage"].toDouble());
-        QPointF point_busVoltage(point_counter,obj["busvoltage"].toDouble());
-        QPointF point_loadtVoltage(point_counter,obj["loadvoltage"].toDouble());
-        QPointF point_current(point_counter,obj["current_mA"].toDouble());
-        QPointF point_power(point_counter,obj["power_mW"].toDouble());
+        QJsonObject obj = samples[point_counter].toObject();
+
+        QPointF point_shuntVoltage(m_point_counter + point_counter, obj["shuntvoltage"].toDouble());
+        QPointF point_busVoltage(m_point_counter + point_counter,obj["busvoltage"].toDouble());
+        QPointF point_loadtVoltage(m_point_counter + point_counter,obj["loadvoltage"].toDouble());
+        QPointF point_current(m_point_counter + point_counter,obj["current_mA"].toDouble());
+        QPointF point_power(m_point_counter + point_counter,obj["power_mW"].toDouble());
 
         points_shuntVoltage << point_shuntVoltage;
         points_busVoltage << point_busVoltage;
         points_loadVoltage << point_loadtVoltage;
         points_current << point_current;
         points_power << point_power;
-
-        point_counter++;
     }
 
-    curve_busVoltage->setSamples(points_busVoltage);
-    curve_shuntVoltage->setSamples(points_shuntVoltage);
-    curve_loadVoltage->setSamples(points_loadVoltage);
+    m_point_counter += samples.count();
+
+    // curve_busVoltage->setSamples(points_busVoltage);
+    // curve_shuntVoltage->setSamples(points_shuntVoltage);
+    // curve_loadVoltage->setSamples(points_loadVoltage);
     curve_current_mA->setSamples(points_current);
     curve_power_mW->setSamples(points_power);
 
     //curve_busVoltage->attach(this);
     //curve_shuntVoltage->attach(this);
     //curve_loadVoltage->attach(this);
-    //curve_current_mA->attach(this);
+    curve_current_mA->attach(this);
     curve_power_mW->attach(this);
 
     // Show the plots
     replot();
-    //update();
 }
 

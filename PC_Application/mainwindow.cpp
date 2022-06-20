@@ -3,6 +3,7 @@
 #include <QJsonDocument>
 #include <QFileDialog>
 #include <QDateTime>
+#include <QList>
 #include <QSerialPortInfo>
 #include <qwt.h>
 #include <qwt_plot.h>
@@ -22,33 +23,29 @@ MainWindow::MainWindow(QWidget *parent)
         ui->comboBox_SERIAL_PORTS->addItem(info.portName());
     }
 
-    populatorThread = new serialPortListPopulator();
-    populatorThread->start();
-
     connect(ui->actionSave_As,SIGNAL(triggered(bool)),this,SLOT(displayFileDialog()));
     connect(ui->actionExit,SIGNAL(triggered(bool)),this,SLOT(exitProgram()));
 
-    daq_thread = new DataAcquisitionThread();
-    connect(daq_thread,SIGNAL(notifyDAQConnected(bool)),this, SLOT(SetDeviceConnected(bool)));
-    connect(daq_thread,SIGNAL(sendMeasurementResults(QJsonObject)), this, SLOT(ReceiveMeasurements(QJsonObject)));
-    connect(this,SIGNAL(startCommunication(QString)),daq_thread,SLOT(startCommunicationOnPort(QString)));
-    connect(this,SIGNAL(stopCommunication()),daq_thread,SLOT(stopCommunicationOnPort()));
-    daq_thread->start();
+    populatorThread = new serialPortListPopulator();
+    connect(populatorThread,SIGNAL(sendPortList(QStringList)),this,SLOT(populateSerialPorts(QStringList)));
+    populatorThread->start();
+
+    daq = new DataAcquisition();
+    connect(daq,SIGNAL(notifyDAQConnected(bool)),this, SLOT(SetDeviceConnected(bool)));
+    connect(daq,SIGNAL(sendDataSamples(QJsonArray)), this, SLOT(ReceiveMeasurements(QJsonArray)));
+    connect(this,SIGNAL(startCommunication(QString)),daq,SLOT(startCommunicationOnPort(QString)));
+    connect(this,SIGNAL(stopCommunication()),daq,SLOT(stopCommunicationOnPort()));
 
     timer = new QTimer();
     timer->setSingleShot(false);
-    timer->setInterval(100);
+    timer->setInterval(1000);
     connect(timer,SIGNAL(timeout()),this,SLOT(updateRecordingDuration()));
 }
 
 MainWindow::~MainWindow()
 {
-    daq_thread->stop();
-    daq_thread->terminate();
-
     populatorThread->stop();
     populatorThread->terminate();
-
     delete ui;
 }
 
@@ -75,31 +72,38 @@ void MainWindow::SetDeviceConnected(bool status)
     }
 }
 
-void MainWindow::ReceiveMeasurements(QJsonObject data)
+void MainWindow::ReceiveMeasurements(QJsonArray data)
 {
-    float busVoltage_now = data["busvoltage_now"].toDouble();
-    float loadVoltage_now = data["loadvoltage_now"].toDouble();
-    float shuntVoltage_now = data["shuntvoltage_now"].toDouble();
-    float current_mA_now = data["current_mA_now"].toDouble();
-    float power_mW_now = data["power_mW_now"].toDouble();
+    double busVoltage_now = 0.0;
+    double loadVoltage_now = 0.0;
+    double shuntVoltage_now = 0.0;
+    double current_mA_now = 0.0;
+    double power_mW_now = 0.0;
 
-    float busVoltage_avg = data["busvoltage_avg"].toDouble();
-    float loadVoltage_avg = data["loadvoltage_avg"].toDouble();
-    float shuntVoltage_avg = data["shuntvoltage_avg"].toDouble();
-    float current_mA_avg = data["current_mA_avg"].toDouble();
-    float power_mW_avg = data["power_mW_avg"].toDouble();
+    QJsonObject obj;
+
+    for (int i=0; i<data.count(); i++)
+    {
+        obj = data[i].toObject();
+        busVoltage_now += obj["busvoltage"].toDouble();
+        loadVoltage_now += obj["loadvoltage"].toDouble();
+        shuntVoltage_now += obj["shuntvoltage"].toDouble();
+        current_mA_now += obj["current_mA"].toDouble();
+        power_mW_now += obj["power_mW"].toDouble();
+    }
+
+
+    busVoltage_now /= data.count();
+    loadVoltage_now /= data.count();
+    shuntVoltage_now /= data.count();
+    current_mA_now /= data.count();
+    power_mW_now /= data.count();
 
     ui->label_BUS_VOLTAGE_NOW->setText(QString::number(busVoltage_now));
     ui->label_SHUNT_VOLTAGE_NOW->setText(QString::number(shuntVoltage_now));
     ui->label_LOAD_VOLTAGE_NOW->setText(QString::number(loadVoltage_now));
     ui->label_CURRENT_NOW->setText(QString::number(current_mA_now));
     ui->label_POWER_NOW->setText(QString::number(power_mW_now));
-
-    ui->label_BUS_VOLTAGE_AVG->setText(QString::number(busVoltage_avg));
-    ui->label_SHUNT_VOLTAGE_AVG->setText(QString::number(shuntVoltage_avg));
-    ui->label_LOAD_VOLTAGE_AVG->setText(QString::number(loadVoltage_avg));
-    ui->label_CURRENT_AVG->setText(QString::number(current_mA_avg));
-    ui->label_POWER_AVG->setText(QString::number(power_mW_avg));
 }
 
 void MainWindow::on_pushButton_START_MEASUREMENT_clicked()
@@ -121,6 +125,7 @@ void MainWindow::on_pushButton_START_MEASUREMENT_clicked()
         daq_thread->stopRecording();
         recording = false;
         timer->stop();
+        ui->plotter->resetPointCounter();
     }
 }
 
@@ -134,13 +139,16 @@ void MainWindow::displayFileDialog()
 
 void MainWindow::updateRecordingDuration()
 {
-    recording_duration++;
     ui->label_RECORDING_DURATION->setStyleSheet("QLabel { background-color : green; color : yellow; }");
-    ui->label_RECORDING_DURATION->setText(QDateTime::fromMSecsSinceEpoch(recording_duration).toUTC().toString("hh:mm:ss.zzz"));
+    ui->label_RECORDING_DURATION->setText(QDateTime::fromSecsSinceEpoch(recording_duration).toUTC().toString("hh:mm:ss"));
+    recording_duration++;
 
-    QList<QJsonObject> samples = daq_thread->getDataSamples();
+    /*
+    QJsonArray samples = daq_thread->getDataSamples();
+    qDebug() << samples.count();
     ui->plotter->setDataSamples(samples);
     ui->plotter->show();
+    */
 }
 
 void MainWindow::on_pushButton_CONNECT_clicked()
@@ -162,12 +170,10 @@ void MainWindow::on_pushButton_CONNECT_clicked()
     }
 }
 
-void MainWindow::populateSerialPorts(QList<QSerialPortInfo> list)
+void MainWindow::populateSerialPorts(QStringList list)
 {
-    for (const QSerialPortInfo &info : list)
-    {
-        ui->comboBox_SERIAL_PORTS->addItem(info.portName());
-    }
+    ui->comboBox_SERIAL_PORTS->clear();
+    ui->comboBox_SERIAL_PORTS->addItems(list);
 }
 
 void MainWindow::exitProgram()
