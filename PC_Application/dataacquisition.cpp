@@ -8,7 +8,6 @@
 
 DataAcquisition::DataAcquisition()
 {
-    m_logger = new Logger("log.txt");
     port = new QSerialPort();
     connect(port,SIGNAL(errorOccurred(QSerialPort::SerialPortError)),this,SLOT(handleError(QSerialPort::SerialPortError)));
     connect(port,SIGNAL(readyRead()),this,SLOT(readIncommingData()));
@@ -16,37 +15,7 @@ DataAcquisition::DataAcquisition()
 
 DataAcquisition::~DataAcquisition()
 {
-    delete m_logger;
-    m_recording = false;
-    m_running = false;
-}
 
-void DataAcquisition::run()
-{
-
-}
-
-void DataAcquisition::storeCSVFile(QString filePathAndFileName)
-{
-    QFile csvFile(filePathAndFileName);
-    csvFile.open(QIODevice::ReadWrite | QIODevice::Text);
-    csvFile.resize(0);
-    csvFile.write("BUS VOLTAGE,SHUNT VOLTAGE,LOAD VOLTAGE, CURRENT, POWER\n");
-    csvFile.write(m_csvBuffer.toUtf8());
-    csvFile.flush();
-    csvFile.close();
-}
-
-
-void DataAcquisition::startRecording()
-{
-    m_recording = true;
-    m_csvBuffer.clear();
-}
-
-void DataAcquisition::stopRecording()
-{
-    m_recording = false;
 }
 
 void DataAcquisition::startCommunicationOnPort(QString port_name)
@@ -65,18 +34,7 @@ void DataAcquisition::startCommunicationOnPort(QString port_name)
 
 void DataAcquisition::stopCommunicationOnPort()
 {
-    m_running = false;
     port->close();
-    emit notifyDAQConnected(false);
-}
-
-void DataAcquisition::stop()
-{
-    m_running = false;
-    if (port->isOpen())
-    {
-        port->close();
-    }
     emit notifyDAQConnected(false);
 }
 
@@ -85,15 +43,11 @@ void DataAcquisition::handleError(QSerialPort::SerialPortError error)
     qDebug() << error;
     if (error != QSerialPort::SerialPortError::NoError)
     {
-        if (m_running == true)
+        if (port->isOpen())
         {
-            if (port->isOpen())
-            {
-                m_running  = false;
-                port->close();
-                emit notifyDAQConnected(false);
-            }
+            port->close();
         }
+        emit notifyDAQConnected(false);
     }
 }
 

@@ -5,8 +5,8 @@
 #include <QDateTime>
 #include <QList>
 #include <QSerialPortInfo>
-#include <qwt.h>
-#include <qwt_plot.h>
+#include <qwt/qwt.h>
+#include <qwt/qwt_plot.h>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -35,6 +35,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(daq,SIGNAL(sendDataSamples(QJsonArray)), this, SLOT(ReceiveMeasurements(QJsonArray)));
     connect(this,SIGNAL(startCommunication(QString)),daq,SLOT(startCommunicationOnPort(QString)));
     connect(this,SIGNAL(stopCommunication()),daq,SLOT(stopCommunicationOnPort()));
+
+    recorder = new DataRecorder();
+    connect(daq,SIGNAL(sendDataSamples(QJsonArray)),recorder,SLOT(ReceiveDataSamples(QJsonArray)));
+    connect(recorder,SIGNAL(RecordingStarted()),this,SLOT(HandleRecordingStarted()));
+    connect(recorder,SIGNAL(RecordingStopped()),this,SLOT(HandleRecordingStopped()));
 
     timer = new QTimer();
     timer->setSingleShot(false);
@@ -81,7 +86,6 @@ void MainWindow::ReceiveMeasurements(QJsonArray data)
     double power_mW_now = 0.0;
 
     QJsonObject obj;
-
     for (int i=0; i<data.count(); i++)
     {
         obj = data[i].toObject();
@@ -91,7 +95,6 @@ void MainWindow::ReceiveMeasurements(QJsonArray data)
         current_mA_now += obj["current_mA"].toDouble();
         power_mW_now += obj["power_mW"].toDouble();
     }
-
 
     busVoltage_now /= data.count();
     loadVoltage_now /= data.count();
@@ -110,22 +113,11 @@ void MainWindow::on_pushButton_START_MEASUREMENT_clicked()
 {
     if (!recording)
     {
-        ui->pushButton_START_MEASUREMENT->setText("STOP MEASUREMENT RECORDING");
-        ui->label_RECORDING_STATUS->setText("RECORDING IN PROGRESS");
-        ui->label_RECORDING_STATUS->setStyleSheet("QLabel { background-color : green; color : yellow; }");
-        daq_thread->startRecording();
-        recording = true;
-        recording_duration = 0;
-        timer->start();
+        recorder->startRecording();
     }
     else
     {
-        ui->pushButton_START_MEASUREMENT->setText("START MEASUREMENT RECORDING");
-        ui->label_RECORDING_STATUS->setText("---");
-        daq_thread->stopRecording();
-        recording = false;
-        timer->stop();
-        ui->plotter->resetPointCounter();
+        recorder->stopRecording();
     }
 }
 
@@ -134,7 +126,7 @@ void MainWindow::displayFileDialog()
     QFileDialog fileDialog;
     fileDialog.setAcceptMode(QFileDialog::AcceptSave);
     QString filename = fileDialog.getSaveFileName();
-    daq_thread->storeCSVFile(filename);
+    recorder->storeCSVFile(filename);
 }
 
 void MainWindow::updateRecordingDuration()
@@ -162,11 +154,15 @@ void MainWindow::on_pushButton_CONNECT_clicked()
     qApp->processEvents();
     if (!connected)
     {
-        daq_thread->startCommunicationOnPort(ui->comboBox_SERIAL_PORTS->currentText());
+        daq->startCommunicationOnPort(ui->comboBox_SERIAL_PORTS->currentText());
     }
     else
     {
-        daq_thread->stopCommunicationOnPort();
+        daq->stopCommunicationOnPort();
+        if (recording)
+        {
+            recorder->stopRecording();
+        }
     }
 }
 
@@ -179,4 +175,26 @@ void MainWindow::populateSerialPorts(QStringList list)
 void MainWindow::exitProgram()
 {
     QApplication::exit();
+}
+
+void MainWindow::HandleRecordingStarted()
+{
+    ui->pushButton_START_MEASUREMENT->setText("STOP MEASUREMENT RECORDING");
+    ui->label_RECORDING_STATUS->setText("RECORDING IN PROGRESS");
+    ui->label_RECORDING_STATUS->setStyleSheet("QLabel { background-color : green; color : yellow; }");
+    recording_duration = 0;
+    timer->start();
+    recording = true;
+}
+
+void MainWindow::HandleRecordingStopped()
+{
+    /* stop recorder if recording in progress */
+    if (recording)
+    {
+        ui->pushButton_START_MEASUREMENT->setText("START MEASUREMENT RECORDING");
+        ui->label_RECORDING_STATUS->setText("---");
+        timer->stop();
+        recording = false;
+    }
 }

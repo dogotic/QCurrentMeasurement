@@ -7,6 +7,7 @@
 #include <QList>
 
 #include "dataacquisition.h"
+#include "datarecorder.h"
 #include "serialportlistpopulator.h"
 #include "graphplotter.h"
 
@@ -25,9 +26,12 @@ public:
 private:
     Ui::MainWindow *ui;
     DataAcquisition *daq;
+    DataRecorder *recorder;
     serialPortListPopulator *populatorThread;
+
     bool recording = false;
     bool connected = false;
+
     QTimer *timer;
     int recording_duration = 0;
 
@@ -42,6 +46,8 @@ private slots:
     void on_pushButton_CONNECT_clicked();
     void populateSerialPorts(QStringList list);
     void exitProgram();
+    void HandleRecordingStopped();
+    void HandleRecordingStarted();
 
 signals:
     void startCommunication(QString port_name);

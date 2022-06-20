@@ -1,9 +1,9 @@
 #include <math.h>
-#include <qwt.h>
-#include <qwt_plot.h>
-#include <qwt_plot_grid.h>
-#include <qwt_legend.h>
-#include <qwt_plot_curve.h>
+#include <qwt/qwt.h>
+#include <qwt/qwt_plot.h>
+#include <qwt/qwt_plot_grid.h>
+#include <qwt/qwt_legend.h>
+#include <qwt/qwt_plot_curve.h>
 #include "graphplotter.h"
 
 GraphPlotter::GraphPlotter(QWidget *parent, QString title)
