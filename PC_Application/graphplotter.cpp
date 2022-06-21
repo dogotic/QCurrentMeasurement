@@ -11,6 +11,7 @@ GraphPlotter::GraphPlotter(QWidget *parent, QString title)
     setTitle(title);
     setCanvasBackground(Qt::white);
 
+    setAxisScale(0,-2.0,100.0,10.0);
     setAxisAutoScale(true);
 
     insertLegend( new QwtLegend() );
@@ -88,13 +89,13 @@ void GraphPlotter::setDataSamples(QJsonArray samples)
     // curve_shuntVoltage->setSamples(points_shuntVoltage);
     // curve_loadVoltage->setSamples(points_loadVoltage);
     curve_current_mA->setSamples(points_current);
-    curve_power_mW->setSamples(points_power);
+    //curve_power_mW->setSamples(points_power);
 
     //curve_busVoltage->attach(this);
     //curve_shuntVoltage->attach(this);
     //curve_loadVoltage->attach(this);
     curve_current_mA->attach(this);
-    curve_power_mW->attach(this);
+    //curve_power_mW->attach(this);
 
     // Show the plots
     replot();

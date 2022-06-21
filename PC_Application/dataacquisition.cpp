@@ -56,6 +56,7 @@ void DataAcquisition::readIncommingData()
     // fill read buffer until valid json is completely received
     data_in.append(port->readAll());
     QJsonDocument doc = QJsonDocument::fromJson(data_in);
+    qDebug() << doc;
     if (doc.isArray())
     {
         m_dataSamples = doc.array();

@@ -44,7 +44,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     timer = new QTimer();
     timer->setSingleShot(false);
-    timer->setInterval(1000);
+    timer->setInterval(40);
     connect(timer,SIGNAL(timeout()),this,SLOT(updateRecordingDuration()));
 }
 
