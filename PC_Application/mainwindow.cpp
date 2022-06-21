@@ -33,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent)
     daq = new DataAcquisition();
     connect(daq,SIGNAL(notifyDAQConnected(bool)),this, SLOT(SetDeviceConnected(bool)));
     connect(daq,SIGNAL(sendDataSamples(QJsonArray)), this, SLOT(ReceiveMeasurements(QJsonArray)));
+    connect(daq,SIGNAL(sendDataSamples(QJsonArray)),ui->plotter,SLOT(setDataSamples(QJsonArray)));
     connect(this,SIGNAL(startCommunication(QString)),daq,SLOT(startCommunicationOnPort(QString)));
     connect(this,SIGNAL(stopCommunication()),daq,SLOT(stopCommunicationOnPort()));
 
@@ -135,12 +136,7 @@ void MainWindow::updateRecordingDuration()
     ui->label_RECORDING_DURATION->setText(QDateTime::fromSecsSinceEpoch(recording_duration).toUTC().toString("hh:mm:ss"));
     recording_duration++;
 
-    /*
-    QJsonArray samples = daq_thread->getDataSamples();
-    qDebug() << samples.count();
-    ui->plotter->setDataSamples(samples);
     ui->plotter->show();
-    */
 }
 
 void MainWindow::on_pushButton_CONNECT_clicked()

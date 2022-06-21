@@ -17,6 +17,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     dataacquisition.cpp \
+    datarecorder.cpp \
     graphplotter.cpp \
     logger.cpp \
     main.cpp \
@@ -25,6 +26,7 @@ SOURCES += \
 
 HEADERS += \
     dataacquisition.h \
+    datarecorder.h \
     graphplotter.h \
     logger.h \
     mainwindow.h \

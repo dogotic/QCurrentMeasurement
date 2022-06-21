@@ -14,7 +14,6 @@ class GraphPlotter : public QwtPlot
     Q_OBJECT
 public:
     GraphPlotter(QWidget *parent, QString title="");
-    void setDataSamples(QJsonArray samples);
     void resetPointCounter() { m_point_counter = 0; }
 
 private:
@@ -26,6 +25,9 @@ private:
     QwtPlotCurve *curve_power_mW;
     QwtWeedingCurveFitter *fitter;
     int m_point_counter = 0;
+
+public slots:
+    void setDataSamples(QJsonArray samples);
 };
 
 #endif // GRAPHPLOTTER_H
