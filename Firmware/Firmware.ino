@@ -4,8 +4,6 @@
 
 Adafruit_INA219 ina219;
 
-StaticJsonDocument<32767> measurements;
-
 int i = 0;
 
 enum states
@@ -18,7 +16,7 @@ states state = STATE_INIT;
 
 void setup(void) 
 {
-  Serial.begin(921600);
+  Serial.begin(115200);
   while (!Serial) 
   {
       // will pause Zero, Leonardo, etc until serial console opens
@@ -46,34 +44,27 @@ void setup(void)
 
 void loop(void) 
 {
-  if (i < 40)
-  {
-    float shuntvoltage = 0;
-    float busvoltage = 0;
-    float current_mA = 0;
-    float loadvoltage = 0;
-    float power_mW = 0;
-  
-    shuntvoltage = ina219.getShuntVoltage_mV();
-    busvoltage = ina219.getBusVoltage_V();
-    current_mA = ina219.getCurrent_mA();
-    power_mW = ina219.getPower_mW();
-    loadvoltage = busvoltage + (shuntvoltage / 1000);    
+  float shuntvoltage = 0;
+  float busvoltage = 0;
+  float current_mA = 0;
+  float loadvoltage = 0;
+  float power_mW = 0;
 
-    measurements[i]["device_name"] = "QCurrentMeasurement";
-    measurements[i]["device_version"] = "0.0.1";
-    measurements[i]["shuntvoltage"] = shuntvoltage;
-    measurements[i]["busvoltage"] = busvoltage;
-    measurements[i]["current_mA"] =  current_mA;
-    measurements[i]["power_mW"] =  power_mW;
-    measurements[i]["loadvoltage"] = loadvoltage;
-    i++;
-  }
-  else
-  {
-    serializeJson(measurements,Serial);
-    Serial.println("");
-    i=0;
-  }
-  delay(1);
+  shuntvoltage = ina219.getShuntVoltage_mV();
+  busvoltage = ina219.getBusVoltage_V();
+  current_mA = ina219.getCurrent_mA();
+  power_mW = ina219.getPower_mW();
+  loadvoltage = busvoltage + (shuntvoltage / 1000);    
+
+  Serial.print("QCurrentMeasurement,");
+  Serial.print(loadvoltage);
+  Serial.print(",");  
+  Serial.print(busvoltage);
+  Serial.print(",");
+  Serial.print(shuntvoltage);  
+  Serial.print(",");
+  Serial.print(current_mA);
+  Serial.print(",");
+  Serial.println(power_mW);
+  delay(10);
 }

@@ -2,7 +2,6 @@
 #define DATARECORDER_H
 
 #include <QObject>
-#include <QJsonArray>
 
 class DataRecorder : public QObject
 {
@@ -19,7 +18,7 @@ private:
     QString m_csvBuffer;
 
 public slots:
-    void ReceiveDataSamples(QJsonArray dataSamples);
+    void ReceiveDataSamples(QByteArray dataSamples);
 
 signals:
     void RecordingStarted();

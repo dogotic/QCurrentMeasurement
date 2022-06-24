@@ -42,7 +42,7 @@ void DataRecorder::storeCSVFile(QString filePathAndFileName)
     }
 }
 
-void DataRecorder::ReceiveDataSamples(QJsonArray dataSamples)
+void DataRecorder::ReceiveDataSamples(QByteArray dataSamples)
 {
     if (m_recording)
     {
@@ -52,22 +52,19 @@ void DataRecorder::ReceiveDataSamples(QJsonArray dataSamples)
         QString current_mA;
         QString power_mW;
 
-        QJsonObject obj;
-        for (int i=0; i<dataSamples.count(); i++)
-        {
-            obj = dataSamples[i].toObject();
+        QString input = QString(dataSamples);
+        QStringList items = input.split(",");
 
-            busVoltage = QString::number(obj["busvoltage"].toDouble());
-            loadVoltage = QString::number(obj["loadvoltage"].toDouble());
-            shuntVoltage = QString::number(obj["shuntvoltage"].toDouble());
-            current_mA = QString::number(obj["current_mA"].toDouble());
-            power_mW = QString::number(obj["power_mW"].toDouble());
+        loadVoltage = items[1];
+        busVoltage = items[2];
+        shuntVoltage = items[3];
+        current_mA = items[4];
+        power_mW = items[5];
 
-            m_csvBuffer.append(busVoltage + ",");
-            m_csvBuffer.append(loadVoltage + ",");
-            m_csvBuffer.append(shuntVoltage + ",");
-            m_csvBuffer.append(current_mA + ",");
-            m_csvBuffer.append(power_mW + "\n");
-        }
+        m_csvBuffer.append(busVoltage + ",");
+        m_csvBuffer.append(loadVoltage + ",");
+        m_csvBuffer.append(shuntVoltage + ",");
+        m_csvBuffer.append(current_mA + ",");
+        m_csvBuffer.append(power_mW + "\n");
     }
 }

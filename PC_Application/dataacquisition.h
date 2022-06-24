@@ -29,7 +29,7 @@ private:
 
 signals:
     void notifyDAQConnected(bool status);
-    void sendDataSamples(QJsonArray dataSamples);
+    void sendDataSamples(QByteArray dataSamples);
 
 public slots:
     void startCommunicationOnPort(QString port_name);

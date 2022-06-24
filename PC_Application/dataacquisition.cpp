@@ -25,7 +25,7 @@ void DataAcquisition::startCommunicationOnPort(QString port_name)
 #elif _WIN32
     port->setPortName(port_name);
 #endif
-    port->setBaudRate(921600);
+    port->setBaudRate(115200);
     port->setDataBits(QSerialPort::Data8);
     port->setStopBits(QSerialPort::OneStop);
     port->setParity(QSerialPort::NoParity);
@@ -53,8 +53,17 @@ void DataAcquisition::handleError(QSerialPort::SerialPortError error)
 
 void DataAcquisition::readIncommingData()
 {
-    // fill read buffer until valid json is completely received
-    data_in.append(port->readAll());
+    data_in = port->readAll();
+    if (data_in.contains("QCurrentMeasurement"))
+    {
+        emit notifyDAQConnected(true);
+        emit sendDataSamples(data_in);
+    }
+    else
+    {
+        emit notifyDAQConnected(false);
+    }
+    /*
     QJsonDocument doc = QJsonDocument::fromJson(data_in);
     qDebug() << doc;
     if (doc.isArray())
@@ -72,5 +81,6 @@ void DataAcquisition::readIncommingData()
             notifyDAQConnected(false);
         }
     }
+    */
 }
 

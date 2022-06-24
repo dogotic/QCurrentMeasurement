@@ -11,12 +11,12 @@ GraphPlotter::GraphPlotter(QWidget *parent, QString title)
     setTitle(title);
     setCanvasBackground(Qt::white);
 
-    setAxisScale(0,-2.0,100.0,10.0);
+    setAxisScale(0,-3.0,100.0,10.0);
     setAxisAutoScale(true);
 
     insertLegend( new QwtLegend() );
-    QwtPlotGrid *grid = new QwtPlotGrid();
-    grid->attach(this);
+    //QwtPlotGrid *grid = new QwtPlotGrid();
+    //grid->attach(this);
 
     QwtWeedingCurveFitter *fitter = new QwtWeedingCurveFitter();
     fitter->setTolerance(0.1);
@@ -58,32 +58,37 @@ GraphPlotter::GraphPlotter(QWidget *parent, QString title)
 
 }
 
-void GraphPlotter::setDataSamples(QJsonArray samples)
+void GraphPlotter::setDataSamples(QByteArray samples)
 {
-    QPolygonF points_shuntVoltage;
-    QPolygonF points_busVoltage;
-    QPolygonF points_loadVoltage;
-    QPolygonF points_current;
-    QPolygonF points_power;
+    QString busVoltage;
+    QString loadVoltage;
+    QString shuntVoltage;
+    QString current_mA;
+    QString power_mW;
 
-    for (int point_counter=0; point_counter < samples.count(); point_counter++)
-    {
-        QJsonObject obj = samples[point_counter].toObject();
+    QString input = QString(samples);
+    QStringList items = input.split(",");
 
-        QPointF point_shuntVoltage(m_point_counter + point_counter, obj["shuntvoltage"].toDouble());
-        QPointF point_busVoltage(m_point_counter + point_counter,obj["busvoltage"].toDouble());
-        QPointF point_loadtVoltage(m_point_counter + point_counter,obj["loadvoltage"].toDouble());
-        QPointF point_current(m_point_counter + point_counter,obj["current_mA"].toDouble());
-        QPointF point_power(m_point_counter + point_counter,obj["power_mW"].toDouble());
+    busVoltage = items[1];
+    loadVoltage = items[2];
+    shuntVoltage = items[3];
+    current_mA = items[4];
+    power_mW = items[5];
 
-        points_shuntVoltage << point_shuntVoltage;
-        points_busVoltage << point_busVoltage;
-        points_loadVoltage << point_loadtVoltage;
-        points_current << point_current;
-        points_power << point_power;
-    }
 
-    m_point_counter += samples.count();
+    QPointF point_shuntVoltage(m_point_counter, shuntVoltage.toDouble());
+    QPointF point_busVoltage(m_point_counter,busVoltage.toDouble());
+    QPointF point_loadtVoltage(m_point_counter,loadVoltage.toDouble());
+    QPointF point_current(m_point_counter,current_mA.toDouble());
+    QPointF point_power(m_point_counter,power_mW.toDouble());
+
+    points_shuntVoltage << point_shuntVoltage;
+    points_busVoltage << point_busVoltage;
+    points_loadVoltage << point_loadtVoltage;
+    points_current << point_current;
+    points_power << point_power;
+
+    m_point_counter++;
 
     // curve_busVoltage->setSamples(points_busVoltage);
     // curve_shuntVoltage->setSamples(points_shuntVoltage);

@@ -32,13 +32,13 @@ MainWindow::MainWindow(QWidget *parent)
 
     daq = new DataAcquisition();
     connect(daq,SIGNAL(notifyDAQConnected(bool)),this, SLOT(SetDeviceConnected(bool)));
-    connect(daq,SIGNAL(sendDataSamples(QJsonArray)), this, SLOT(ReceiveMeasurements(QJsonArray)));
-    connect(daq,SIGNAL(sendDataSamples(QJsonArray)),ui->plotter,SLOT(setDataSamples(QJsonArray)));
+    connect(daq,SIGNAL(sendDataSamples(QByteArray)), this, SLOT(ReceiveMeasurements(QByteArray)));
+    connect(daq,SIGNAL(sendDataSamples(QByteArray)),ui->plotter,SLOT(setDataSamples(QByteArray)));
     connect(this,SIGNAL(startCommunication(QString)),daq,SLOT(startCommunicationOnPort(QString)));
     connect(this,SIGNAL(stopCommunication()),daq,SLOT(stopCommunicationOnPort()));
 
     recorder = new DataRecorder();
-    connect(daq,SIGNAL(sendDataSamples(QJsonArray)),recorder,SLOT(ReceiveDataSamples(QJsonArray)));
+    connect(daq,SIGNAL(sendDataSamples(QByteArray)),recorder,SLOT(ReceiveDataSamples(QByteArray)));
     connect(recorder,SIGNAL(RecordingStarted()),this,SLOT(HandleRecordingStarted()));
     connect(recorder,SIGNAL(RecordingStopped()),this,SLOT(HandleRecordingStopped()));
 
@@ -78,36 +78,28 @@ void MainWindow::SetDeviceConnected(bool status)
     }
 }
 
-void MainWindow::ReceiveMeasurements(QJsonArray data)
+void MainWindow::ReceiveMeasurements(QByteArray samples)
 {
-    double busVoltage_now = 0.0;
-    double loadVoltage_now = 0.0;
-    double shuntVoltage_now = 0.0;
-    double current_mA_now = 0.0;
-    double power_mW_now = 0.0;
+    QString busVoltage;
+    QString loadVoltage;
+    QString shuntVoltage;
+    QString current_mA;
+    QString power_mW;
 
-    QJsonObject obj;
-    for (int i=0; i<data.count(); i++)
-    {
-        obj = data[i].toObject();
-        busVoltage_now += obj["busvoltage"].toDouble();
-        loadVoltage_now += obj["loadvoltage"].toDouble();
-        shuntVoltage_now += obj["shuntvoltage"].toDouble();
-        current_mA_now += obj["current_mA"].toDouble();
-        power_mW_now += obj["power_mW"].toDouble();
-    }
+    QString input = QString(samples);
+    QStringList items = input.split(",");
 
-    busVoltage_now /= data.count();
-    loadVoltage_now /= data.count();
-    shuntVoltage_now /= data.count();
-    current_mA_now /= data.count();
-    power_mW_now /= data.count();
+    busVoltage = items[1];
+    loadVoltage = items[2];
+    shuntVoltage = items[3];
+    current_mA = items[4];
+    power_mW = items[5];
 
-    ui->label_BUS_VOLTAGE_NOW->setText(QString::number(busVoltage_now));
-    ui->label_SHUNT_VOLTAGE_NOW->setText(QString::number(shuntVoltage_now));
-    ui->label_LOAD_VOLTAGE_NOW->setText(QString::number(loadVoltage_now));
-    ui->label_CURRENT_NOW->setText(QString::number(current_mA_now));
-    ui->label_POWER_NOW->setText(QString::number(power_mW_now));
+    ui->label_BUS_VOLTAGE_NOW->setText(busVoltage);
+    ui->label_SHUNT_VOLTAGE_NOW->setText(shuntVoltage);
+    ui->label_LOAD_VOLTAGE_NOW->setText(loadVoltage);
+    ui->label_CURRENT_NOW->setText(current_mA);
+    ui->label_POWER_NOW->setText(power_mW);
 }
 
 void MainWindow::on_pushButton_START_MEASUREMENT_clicked()

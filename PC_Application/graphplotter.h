@@ -17,17 +17,21 @@ public:
     void resetPointCounter() { m_point_counter = 0; }
 
 private:
-    QList<QJsonObject> m_dataSamples;
     QwtPlotCurve *curve_busVoltage;
     QwtPlotCurve *curve_loadVoltage;
     QwtPlotCurve *curve_shuntVoltage;
     QwtPlotCurve *curve_current_mA;
     QwtPlotCurve *curve_power_mW;
     QwtWeedingCurveFitter *fitter;
+    QPolygonF points_shuntVoltage;
+    QPolygonF points_busVoltage;
+    QPolygonF points_loadVoltage;
+    QPolygonF points_current;
+    QPolygonF points_power;
     int m_point_counter = 0;
 
 public slots:
-    void setDataSamples(QJsonArray samples);
+    void setDataSamples(QByteArray samples);
 };
 
 #endif // GRAPHPLOTTER_H

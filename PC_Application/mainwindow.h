@@ -37,7 +37,7 @@ private:
 
 public slots:
     void SetDeviceConnected(bool status);
-    void ReceiveMeasurements(QJsonArray samples);
+    void ReceiveMeasurements(QByteArray samples);
 
 private slots:
     void on_pushButton_START_MEASUREMENT_clicked();
