@@ -63,24 +63,5 @@ void DataAcquisition::readIncommingData()
     {
         emit notifyDAQConnected(false);
     }
-    /*
-    QJsonDocument doc = QJsonDocument::fromJson(data_in);
-    qDebug() << doc;
-    if (doc.isArray())
-    {
-        m_dataSamples = doc.array();
-        data_in.clear();
-        m_deviceName = m_dataSamples[0].toObject()["device_name"].toString();
-        if (m_deviceName == "QCurrentMeasurement")
-        {
-            emit notifyDAQConnected(true);
-            emit sendDataSamples(m_dataSamples);
-        }
-        else
-        {
-            notifyDAQConnected(false);
-        }
-    }
-    */
 }
 

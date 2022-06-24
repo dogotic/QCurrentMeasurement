@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>964</width>
-    <height>600</height>
+    <height>767</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -188,23 +188,6 @@ foreground:green;</string>
            </property>
           </widget>
          </item>
-         <item>
-          <widget class="QPushButton" name="pushButton_2">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>16</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>START RECORDING</string>
-           </property>
-          </widget>
-         </item>
         </layout>
        </item>
       </layout>
@@ -219,7 +202,7 @@ foreground:green;</string>
        <item>
         <widget class="QTabWidget" name="tabWidget">
          <property name="currentIndex">
-          <number>4</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="tab">
           <attribute name="title">
@@ -249,11 +232,7 @@ foreground:green;</string>
           <attribute name="title">
            <string>POWER</string>
           </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout_13">
-           <item>
-            <widget class="QwtPlot" name="qwtPlot_POWER"/>
-           </item>
-          </layout>
+          <layout class="QVBoxLayout" name="verticalLayout_13"/>
          </widget>
         </widget>
        </item>
@@ -268,19 +247,12 @@ foreground:green;</string>
      <x>0</x>
      <y>0</y>
      <width>964</width>
-     <height>25</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>QwtPlot</class>
-   <extends>QFrame</extends>
-   <header>qwt_plot.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

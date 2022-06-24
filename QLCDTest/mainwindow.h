@@ -2,11 +2,16 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QtCharts/QChartView>
+#include <QtCharts/QLineSeries>
+#include <QLineSeries>
 
 #include "dataacquisition.h"
 #include "datarecorder.h"
 #include "serialportlistpopulator.h"
 #include "graphplotter.h"
+
+QT_CHARTS_USE_NAMESPACE
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -26,13 +31,9 @@ public slots:
 
 private slots:
     void on_pushButton_clicked();
-    void on_pushButton_2_clicked();
     void displayFileDialog();
-    void updateRecordingDuration();
     void populateSerialPorts(QStringList list);
     void exitProgram();
-    void HandleRecordingStopped();
-    void HandleRecordingStarted();
 
 private:
     Ui::MainWindow *ui;
@@ -40,11 +41,12 @@ private:
     DataRecorder *recorder;
     serialPortListPopulator *populatorThread;
 
-    bool recording = false;
-    bool connected = false;
+    QChart *chart_BUS_VOLTAGE;
+    QLineSeries *series_BUS_VOLTAGE;
 
-    QTimer *timer;
-    int recording_duration = 0;
+    bool connected = false;
+    int m_sampleCounter = 0;
+    int m_mod = 1000;
 
 signals:
     void startCommunication(QString port_name);
