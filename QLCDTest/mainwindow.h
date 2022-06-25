@@ -2,16 +2,10 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QtCharts/QChartView>
-#include <QtCharts/QLineSeries>
-#include <QLineSeries>
-
 #include "dataacquisition.h"
 #include "datarecorder.h"
 #include "serialportlistpopulator.h"
-#include "graphplotter.h"
-
-QT_CHARTS_USE_NAMESPACE
+#include "chart.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -41,12 +35,14 @@ private:
     DataRecorder *recorder;
     serialPortListPopulator *populatorThread;
 
-    QChart *chart_BUS_VOLTAGE;
-    QLineSeries *series_BUS_VOLTAGE;
+    Chart *m_chart_busVoltage;
+    Chart *m_chart_loadVoltage;
+    Chart *m_chart_shuntVoltage;
+    Chart *m_chart_current;
+    Chart *m_chart_power;
 
     bool connected = false;
     int m_sampleCounter = 0;
-    int m_mod = 1000;
 
 signals:
     void startCommunication(QString port_name);

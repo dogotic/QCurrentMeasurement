@@ -1,8 +1,6 @@
 #include <QTimer>
 #include <QList>
 #include <QFileDialog>
-#include <qwt/qwt_legend.h>
-#include <qwt/qwt_plot_grid.h>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -13,20 +11,11 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    series_BUS_VOLTAGE = new QLineSeries();
-    chart_BUS_VOLTAGE = new QChart();
-    chart_BUS_VOLTAGE->addSeries(series_BUS_VOLTAGE);
-    chart_BUS_VOLTAGE->legend()->hide();
-    chart_BUS_VOLTAGE->createDefaultAxes();
-    chart_BUS_VOLTAGE->axisX()->setRange(0, 1000);
-    chart_BUS_VOLTAGE->axisX()->setTitleText("SECONDS (s)");
-    chart_BUS_VOLTAGE->axisY()->setRange(-0.3,0.3);
-    chart_BUS_VOLTAGE->axisY()->setTitleText("VOLTAGE (V)");
-
-    QChartView *chartView = new QChartView(chart_BUS_VOLTAGE);
-    chartView->chart()->setTheme(QChart::ChartThemeDark);
-    chartView->setRenderHint(QPainter::Antialiasing);
-    ui->tab->layout()->addWidget(chartView);
+    m_chart_busVoltage = new Chart(ui->tab,"TIME (s)", "VOLTAGE (V)", 0, 1000, -3.0, 20.0);
+    m_chart_loadVoltage = new Chart(ui->tab_2,"TIME (s)", "VOLTAGE (V)", 0, 1000, -3.0, 20.0);
+    m_chart_shuntVoltage = new Chart(ui->tab_3,"TIME (s)", "VOLTAGE (mV)", 0, 1000, -300.0, 300.0);
+    m_chart_current = new Chart(ui->tab_4,"TIME (s)", "CURRENT (mA)", 0, 1000, -300.0, 5000.0);
+    m_chart_power = new Chart(ui->tab_5,"TIME (s)", "POWER (mW)", 0, 1000, 0.0, 20000.0);
 
     const auto infos = QSerialPortInfo::availablePorts();
     for (const QSerialPortInfo &info : infos)
@@ -70,10 +59,12 @@ void MainWindow::on_pushButton_clicked()
     qApp->processEvents();
     if (!connected)
     {
-        m_mod = 1000;
         m_sampleCounter = 0;
-        chart_BUS_VOLTAGE->axisX()->setRange(0, 1000);
-        series_BUS_VOLTAGE->clear();
+        m_chart_busVoltage->Reset();
+        m_chart_loadVoltage->Reset();
+        m_chart_shuntVoltage->Reset();
+        m_chart_current->Reset();
+        m_chart_power->Reset();
 
         daq->startCommunicationOnPort(ui->comboBox_SERIAL_PORTS->currentText());
         recorder->startRecording();
@@ -102,14 +93,11 @@ void MainWindow::ReceiveMeasurements(QByteArray samples)
     current_mA = items[4];
     power_mW = items[5];
 
-    series_BUS_VOLTAGE->append(m_sampleCounter, shuntVoltage.toDouble());
-
-    if((m_sampleCounter > 0) && (m_sampleCounter % m_mod == 0))
-    {
-        chart_BUS_VOLTAGE->axisX()->setRange(m_sampleCounter - 1000, m_sampleCounter);
-        m_mod = 1;
-        //series_BUS_VOLTAGE->removePoints(0, 900);
-    }
+    m_chart_busVoltage->Update(m_sampleCounter,busVoltage.toDouble());
+    m_chart_loadVoltage->Update(m_sampleCounter,loadVoltage.toDouble());
+    m_chart_shuntVoltage->Update(m_sampleCounter,shuntVoltage.toDouble());
+    m_chart_current->Update(m_sampleCounter,current_mA.toDouble());
+    m_chart_power->Update(m_sampleCounter,power_mW.toDouble());
 
     ui->lcdNumber_BUS_VOLTAGE->display(busVoltage);
     ui->lcdNumber_LOAD_VOLTAGE->display(loadVoltage);
