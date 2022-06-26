@@ -4,13 +4,9 @@ GUI for the INA219 current measurement device
 PROTOCOL
 ---------
 The current measuring device sends constantly the following data
-[device_name] = "QCurrentMeasurement"
-[device_version] = "x.y.z"
-[shuntvoltage] = <Measured shunt voltage in mV>
-[busvoltage] = <Measured bus voltage in V>
-[loadvoltage] = <Measured load voltage in V>
-[current_mA] = <Measured current in mA>
-[power_mW] = <Measured power in mW>
+byte_0             |byte_1     |byte_2      |byte_3       |byte_4      |byte_5       |
+-------------------|-----------|------------|-------------|------------|-------------|
+QCurrentMeasurement|bus_voltage|load_voltage|shunt_voltage|current_mA  |power_mW     |
 
 The device name and device version is used to verify that the connected device is 
 our device and not any other usb - serial  connected device, so we don't read gibberish
