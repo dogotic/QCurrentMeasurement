@@ -6,8 +6,6 @@
 #include <QFile>
 #include "dataacquisition.h"
 
-int sample_cntr = 0;
-
 DataAcquisition::DataAcquisition()
 {
     port = new QSerialPort();
@@ -57,8 +55,6 @@ void DataAcquisition::readIncommingData()
 {
     //data_in = port->readAll();
     data_in = port->readLine();
-    qDebug() << sample_cntr;
-    sample_cntr++;
     if (data_in.contains("QCurrentMeasurement"))
     {
         emit notifyDAQConnected(true);
@@ -66,7 +62,6 @@ void DataAcquisition::readIncommingData()
     }
     else
     {
-        sample_cntr = 0;
         emit notifyDAQConnected(false);
     }
 }

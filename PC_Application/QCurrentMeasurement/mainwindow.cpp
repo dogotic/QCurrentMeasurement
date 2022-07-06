@@ -152,3 +152,53 @@ void MainWindow::on_actionAbout_triggered()
 {
 
 }
+
+void MainWindow::on_horizontalSlider_LOAD_VOLTAGE_MIN_sliderMoved(int position)
+{
+    m_chart_loadVoltage->setYAxisMin(position);
+}
+
+void MainWindow::on_horizontalSlider_LOAD_VOLTAGE_MAX_sliderMoved(int position)
+{
+    m_chart_loadVoltage->setYAxisMax(position);
+}
+
+void MainWindow::on_horizontalSlider_BUS_VOLTAGE_MIN_sliderMoved(int position)
+{
+    m_chart_busVoltage->setYAxisMin(position);
+}
+
+void MainWindow::on_horizontalSlider_BUS_VOLTAGE_MAX_sliderMoved(int position)
+{
+    m_chart_busVoltage->setYAxisMax(position);
+}
+
+void MainWindow::on_horizontalSlider_SHUNT_VOLTAGE_MIN_sliderMoved(int position)
+{
+    m_chart_shuntVoltage->setYAxisMin(position);
+}
+
+void MainWindow::on_horizontalSlider_SHUNT_VOLTAGE_MAX_sliderMoved(int position)
+{
+    m_chart_shuntVoltage->setYAxisMax(position);
+}
+
+void MainWindow::on_horizontalSlider_CURRENT_MIN_sliderMoved(int position)
+{
+    m_chart_current->setYAxisMin(position);
+}
+
+void MainWindow::on_horizontalSlider_CURRENT_MAX_sliderMoved(int position)
+{
+    m_chart_current->setYAxisMax(position);
+}
+
+void MainWindow::on_horizontalSlider_POWER_MIN_sliderMoved(int position)
+{
+    m_chart_power->setYAxisMin(position);
+}
+
+void MainWindow::on_horizontalSlider_POWER_MAX_sliderMoved(int position)
+{
+    m_chart_power->setYAxisMax(position);
+}

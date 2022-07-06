@@ -35,6 +35,8 @@ public:
     void Reset();
     void Update(int x_value, double y_value);
     void Update(int x_value, int y_value);
+    void setYAxisMin(int min);
+    void setYAxisMax(int max);
 };
 
 #endif // CHART_H

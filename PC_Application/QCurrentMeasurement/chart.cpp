@@ -22,8 +22,10 @@ Chart::Chart(QWidget *parent,
     m_chart->addSeries(m_series);
     m_chart->legend()->hide();
     m_chart->createDefaultAxes();
+
     m_chart->axisX()->setRange(m_xAxisMin,m_xAxisMax);
     m_chart->axisX()->setTitleText(m_xAxisTitle);
+
     m_chart->axisY()->setRange(m_yAxisMin,m_yAxisMax);
     m_chart->axisY()->setTitleText(m_yAxisTitle);
 
@@ -49,4 +51,18 @@ void Chart::Update(int x_value, double y_value)
         m_chart->axisX()->setRange(x_value - m_xAxisMax.toInt(), x_value);
         m_mod = 1;
     }
+}
+
+void Chart::setYAxisMin(int min)
+{
+    m_yAxisMin = min;
+    m_chart->axisX()->setRange(m_xAxisMin,m_xAxisMax);
+    m_chart->axisY()->setRange(m_yAxisMin,m_yAxisMax);
+}
+
+void Chart::setYAxisMax(int max)
+{
+    m_yAxisMax = max;
+    m_chart->axisX()->setRange(m_xAxisMin,m_xAxisMax);
+    m_chart->axisY()->setRange(m_yAxisMin,m_yAxisMax);
 }
