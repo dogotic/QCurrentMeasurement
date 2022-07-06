@@ -27,7 +27,10 @@ private slots:
     void on_pushButton_clicked();
     void displayFileDialog();
     void populateSerialPorts(QStringList list);
-    void exitProgram();
+
+    void on_actionExport_Samples_as_CSV_triggered();
+    void on_actionExit_triggered();
+    void on_actionAbout_triggered();
 
 private:
     Ui::MainWindow *ui;

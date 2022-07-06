@@ -65,6 +65,8 @@ void loop(void)
   Serial.print(",");
   Serial.print(current_mA);
   Serial.print(",");
-  Serial.println(power_mW);
+  Serial.print(power_mW);
+  Serial.print(",");  
+  Serial.println("");
   delay(10);
 }
