@@ -6,7 +6,7 @@ PROTOCOL
 The current measuring device sends constantly the following stream of data
 
 | BYTE_0             | BYTE_1             | BYTE_2             | BYTE_3             | BYTE_4             | BYTE_5             |
----------------------|--------------------|--------------------|--------------------|-----------------------------------------|
+|--------------------|--------------------|--------------------|--------------------|-----------------------------------------|
 | QCurrentMeasurement|bus_voltage         |load_voltage        |shunt_voltage       |current_mA          |power_mW            |
 
 The first byte is always the string QCurrentMeasurement, so we can verify that the correct device has been connected.
