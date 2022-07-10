@@ -27,7 +27,30 @@ private slots:
     void on_pushButton_clicked();
     void displayFileDialog();
     void populateSerialPorts(QStringList list);
-    void exitProgram();
+
+    void on_actionExport_Samples_as_CSV_triggered();
+    void on_actionExit_triggered();
+    void on_actionAbout_triggered();
+
+    void on_horizontalSlider_LOAD_VOLTAGE_MIN_sliderMoved(int position);
+
+    void on_horizontalSlider_LOAD_VOLTAGE_MAX_sliderMoved(int position);
+
+    void on_horizontalSlider_BUS_VOLTAGE_MIN_sliderMoved(int position);
+
+    void on_horizontalSlider_BUS_VOLTAGE_MAX_sliderMoved(int position);
+
+    void on_horizontalSlider_SHUNT_VOLTAGE_MIN_sliderMoved(int position);
+
+    void on_horizontalSlider_SHUNT_VOLTAGE_MAX_sliderMoved(int position);
+
+    void on_horizontalSlider_CURRENT_MIN_sliderMoved(int position);
+
+    void on_horizontalSlider_CURRENT_MAX_sliderMoved(int position);
+
+    void on_horizontalSlider_POWER_MIN_sliderMoved(int position);
+
+    void on_horizontalSlider_POWER_MAX_sliderMoved(int position);
 
 private:
     Ui::MainWindow *ui;

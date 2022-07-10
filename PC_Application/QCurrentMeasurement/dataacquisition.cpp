@@ -53,7 +53,8 @@ void DataAcquisition::handleError(QSerialPort::SerialPortError error)
 
 void DataAcquisition::readIncommingData()
 {
-    data_in = port->readAll();
+    //data_in = port->readAll();
+    data_in = port->readLine();
     if (data_in.contains("QCurrentMeasurement"))
     {
         emit notifyDAQConnected(true);
